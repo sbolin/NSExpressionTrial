@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19F101" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Goal" representedClassName=".Goal" syncable="YES">
+        <attribute name="goal" attributeType="String"/>
+        <attribute name="goalCompleted" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="goalDateCompleted" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="goalDateCreated" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="todos" toMany="YES" deletionRule="Cascade" destinationEntity="ToDo" inverseName="goal" inverseEntity="ToDo"/>
+    </entity>
+    <entity name="ToDo" representedClassName=".ToDo" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="todo" attributeType="String"/>
+        <attribute name="todoCompleted" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="todoDateCompleted" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="todoDateCreated" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="goal" maxCount="1" deletionRule="Nullify" destinationEntity="Goal" inverseName="todos" inverseEntity="Goal"/>
+    </entity>
+    <elements>
+        <element name="Goal" positionX="12535.5546875" positionY="-78.46875" width="128" height="118"/>
+        <element name="ToDo" positionX="12717.98828125" positionY="-92.45703125" width="128" height="133"/>
+    </elements>
+</model>
