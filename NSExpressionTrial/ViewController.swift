@@ -10,30 +10,30 @@ import UIKit
 import CoreData
 
 struct ResultGroup {
-  let goalDesc: String
-  let todoDesc: String
-  let todoDateCreatedDesc: Date
-  let todoDateCompletedDesc: Date
-  let goalDateCreatedDesc: Date
-  let goalDateCompletedDesc: Date
-  let todoCompletedDesc: Int
-  let todoCompletedSumDesc: Int
-  let todoMinDateDesc: Date
-  let todoMaxDateDesc: Date
-  let todoDurationDesc: Int
+  let goal: String
+  let todo: String
+  let todoCreated: Date
+  let todoCompleted: Date
+  let goalCreated: Date
+  let goalCompleted: Date
+  let todoComplete: Bool
+  let todoCompletedSum: Int
+  let todoMinDate: Date
+  let todoMaxDate: Date
+  let todoDuration: Int
   
   init(dictInput: [String: Any]) {
-    self.goalDesc = dictInput["goalDesc"] as? String ?? ""
-    self.todoDesc = dictInput["todoDesc"] as? String ?? ""
-    self.todoDateCreatedDesc = dictInput["todoDateCreatedDesc"] as? Date ?? Date()
-    self.todoDateCompletedDesc = dictInput["todoDateCompletedDesc"] as? Date ?? Date()
-    self.goalDateCreatedDesc = dictInput["goalDateCreatedDesc"] as? Date ?? Date()
-    self.goalDateCompletedDesc = dictInput["goalDateCompletedDesc"] as? Date ?? Date()
-    self.todoCompletedDesc = dictInput["todoCompletedDesc"] as? Int ?? 0
-    self.todoCompletedSumDesc = dictInput["todoCompletedSumDesc"] as? Int ?? 0
-    self.todoMinDateDesc = dictInput["todoMinDateDesc"] as? Date ?? Date()
-    self.todoMaxDateDesc = dictInput["todoMaxDateDesc"] as? Date ?? Date()
-    self.todoDurationDesc = dictInput["todoDurationDesc"] as? Int ?? 0
+    self.goal = dictInput["goal"] as! String
+    self.todo = dictInput["todo"] as! String
+    self.todoCreated = dictInput["todoCreated"] as! Date
+    self.todoCompleted = dictInput["todoCompleted"] as? Date ?? Date()
+    self.goalCreated = dictInput["goalCreated"] as! Date
+    self.goalCompleted = dictInput["goalCompleted"] as? Date ?? Date()
+    self.todoComplete = dictInput["todoComplete"] as! Bool
+    self.todoCompletedSum = dictInput["todoCompletedSum"] as? Int ?? 0
+    self.todoMinDate = dictInput["todoMinDate"] as? Date ?? Date()
+    self.todoMaxDate = dictInput["todoMaxDate"] as? Date ?? Date()
+    self.todoDuration = dictInput["todoDuration"] as? Int ?? 0
   }
 }
 
@@ -392,7 +392,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     let todoCompletedDesc = NSExpressionDescription()
     todoCompletedDesc.name = "todoComplete"
     todoCompletedDesc.expression = todoCompletedExp
-    todoCompletedDesc.expressionResultType = .stringAttributeType
+    todoCompletedDesc.expressionResultType = .booleanAttributeType
     
     //    let todoCount = NSExpressionDescription()
     //    todoCount.name = "todoCountDateCreated"
@@ -424,10 +424,10 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     todoMaxDateDesc.expression = todoMaxDate
     todoMaxDateDesc.expressionResultType = .dateAttributeType
     
-    let todoCountDesc = NSExpressionDescription() // add predicate to count if true only
-    todoCountDesc.name = "todoCompletedCount"
-    todoCountDesc.expression = todoCountExp
-    todoCountDesc.expressionResultType = .integer16AttributeType
+//    let todoCountDesc = NSExpressionDescription() // add predicate to count if true only
+//    todoCountDesc.name = "todoCompletedCount"
+//    todoCountDesc.expression = todoCountExp
+//    todoCountDesc.expressionResultType = .integer16AttributeType
     
     
     let sortDateDesc = NSSortDescriptor(keyPath: \ToDo.todoDateCreated, ascending: false)
@@ -470,7 +470,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     }
     
     let groupedDictionary = Dictionary(grouping: ungroupedResults) { (item) -> String in
-      return item.goalDesc
+      return item.goal
     }
     
     let keys = groupedDictionary.keys.sorted()
