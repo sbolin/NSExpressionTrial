@@ -45,6 +45,8 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
 
   var groupedResults = [[ResultGroup]]()
   var ungroupedResults = [ResultGroup]()
+  var anyDict = [String: Any]()
+
   
   var todoRowsInSection: Int?
   var goalRowsInSection: Int?
@@ -378,14 +380,14 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     todoDateCompletedDesc.expressionResultType = .dateAttributeType
     
     let goalDateCreatedDesc = NSExpressionDescription()
-    todoDateCreatedDesc.name = "goalCreated"
-    todoDateCreatedDesc.expression = goalDateCreatedExp
-    todoDateCreatedDesc.expressionResultType = .dateAttributeType
+    goalDateCreatedDesc.name = "goalCreated"
+    goalDateCreatedDesc.expression = goalDateCreatedExp
+    goalDateCreatedDesc.expressionResultType = .dateAttributeType
     
     let goalDateCompletedDesc = NSExpressionDescription()
-    todoDateCompletedDesc.name = "goalCompleted"
-    todoDateCompletedDesc.expression = goalDateCompletedExp
-    todoDateCompletedDesc.expressionResultType = .dateAttributeType
+    goalDateCompletedDesc.name = "goalCompleted"
+    goalDateCompletedDesc.expression = goalDateCompletedExp
+    goalDateCompletedDesc.expressionResultType = .dateAttributeType
     
     let todoCompletedDesc = NSExpressionDescription()
     todoCompletedDesc.name = "todoComplete"
@@ -441,52 +443,44 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     request.sortDescriptors = [sortDateDesc]
     request.returnsObjectsAsFaults = false
     
-    //    var todoFetch: [[String: String]]?
     do {
-      //     todoFetch = try CoreDataController.shared.managedContext.fetch(request)  as? [[String: String]]
-      //     print(todoFetch!)
-      //     print(todoFetch!.count)
-      
       let results = try CoreDataController.shared.managedContext.fetch(request)
-      
-      var anyDict = [String: Any]()
-      
+            
       print("results:")
       print(results)
       print(results.count)
       
       print("each result:")
       results.forEach { (result) in
-        
-        
+        print("result:")
+        print(result)
         for (key, value) in result {
           anyDict[key as! String] = value
         }
         
-        let ungroupedResults = ResultGroup(dictInput: anyDict)
-        
-        print("result:")
-        print(result)
+        ungroupedResults.append(ResultGroup(dictInput: anyDict))
+
         
         print("ungroupedResults:")
         print(ungroupedResults)
         
-        
-        let groupedDictionary = Dictionary(grouping: [ungroupedResults]) { (item) -> String in
-          return item.goalDesc
-        }
-        
-        
-        let keys = groupedDictionary.keys.sorted()
-        
-        keys.forEach({
-          groupedResults.append(groupedDictionary[$0]!)
-        })
-        //        tableView.reloadData()
       }
     } catch {
       NSLog("Error fetching entity: %@", error.localizedDescription)
     }
+    
+    let groupedDictionary = Dictionary(grouping: ungroupedResults) { (item) -> String in
+      return item.goalDesc
+    }
+    
+    let keys = groupedDictionary.keys.sorted()
+    
+    keys.forEach({
+      groupedResults.append(groupedDictionary[$0]!)
+    })
+    print("groupedResults:")
+    print(groupedResults)
+    //        tableView.reloadData()
   }
   
   //MARK: - Goal and Todo Counts
