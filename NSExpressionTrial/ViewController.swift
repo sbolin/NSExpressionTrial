@@ -44,7 +44,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   var todolist = [ToDo]()
 
   var groupedResults = [[ResultGroup]]()
-//  var ungroupedResults = [ResultGroup]()
+  var ungroupedResults = [ResultGroup]()
   
   var todoRowsInSection: Int?
   var goalRowsInSection: Int?
@@ -448,11 +448,9 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
       //     print(todoFetch!.count)
       
       let results = try CoreDataController.shared.managedContext.fetch(request)
-    
-      var anyDict = [String: Any?]()
       
+      var anyDict = [String: Any]()
       
- //     let ungroupedResults = ResultGroup(dictInput: results)
       print("results:")
       print(results)
       print(results.count)
@@ -460,17 +458,27 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
       print("each result:")
       results.forEach { (result) in
         
+        
         for (key, value) in result {
           anyDict[key as! String] = value
         }
-
+        
+        let ungroupedResults = ResultGroup(dictInput: anyDict)
+        
+        print("result:")
         print(result)
         
-        let groupedDictionary = Dictionary(grouping: ungroupedResults) { (item) -> String in
+        print("ungroupedResults:")
+        print(ungroupedResults)
+        
+        
+        let groupedDictionary = Dictionary(grouping: [ungroupedResults]) { (item) -> String in
           return item.goalDesc
         }
+        
+        
         let keys = groupedDictionary.keys.sorted()
-
+        
         keys.forEach({
           groupedResults.append(groupedDictionary[$0]!)
         })
