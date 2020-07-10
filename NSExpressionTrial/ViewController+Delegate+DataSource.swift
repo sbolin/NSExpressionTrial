@@ -12,13 +12,10 @@ import UIKit
 extension ViewController: UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    print("didSelectRowAt")
-    print(indexPath)
     tableView.deselectRow(at: indexPath, animated: true)
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    print("heightForRowAt")
     let row = indexPath.row
     switch row {
     case 0:
@@ -29,12 +26,10 @@ extension ViewController: UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    print("heightForHeaderInSection")
     return groupedResults.count == 0 ? 0 : 36
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    print("viewForHeaderInSection")
     let view = UITableViewHeaderFooterView()
     
     let dateFormatter = DateFormatter()
@@ -49,7 +44,6 @@ extension ViewController: UITableViewDelegate {
     if groupedResults.count == 0 {
       return nil
     }
-    
     if let date = groupedResults[section].first?.goalCreated {
       let title = dateFormatter.string(from: date)
           view.textLabel?.text = title
@@ -62,7 +56,6 @@ extension ViewController: UITableViewDelegate {
 extension ViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
 
-//    print("number of Sections: \(frc1.sections?.count ?? 0)")
 //    return frc1.sections?.count ?? 0
     return groupedResults.count > 0 ? groupedResults.count : 1
   }
@@ -75,8 +68,6 @@ extension ViewController: UITableViewDataSource {
     if var numberOfRows = todoRowsInSection  {
       goalRowsInSection = (numberOfRows - 1) / 3 + 1
       numberOfRows += goalRowsInSection ?? 1
-      print("section # \(section)")
-      print("number of rows: \(numberOfRows)")
       return numberOfRows
     } else {
       return 0
@@ -92,8 +83,12 @@ extension ViewController: UITableViewDataSource {
       let goalcell = tableView.dequeueReusableCell(withIdentifier: "GoalCell", for: indexPath)
       goalcell.backgroundColor = .systemGray6
       goalcell.textLabel?.text = goalItem.goal
-      print("Goal @ indexPath: \(indexPath.section), \(indexPath.row): ", goalItem.goalComplete)
-      goalcell.detailTextLabel?.text = "Goal completed: \(goalItem.goalComplete)"
+      if goalItem.goalComplete {
+        let daysToCompleteGoal = goalItem.goalDuration / 86400
+        goalcell.detailTextLabel?.text = "Goal completed in: \(daysToCompleteGoal) days"
+      } else {
+        goalcell.detailTextLabel?.text = "Goal completed: \(goalItem.goalComplete)"
+      }
       return goalcell
     }
     let offset: Int = indexPath.row / 4 + 1
@@ -101,18 +96,16 @@ extension ViewController: UITableViewDataSource {
     let todoItem = groupedResults[indexPath.section][previousIndex.row]
     let todocell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell", for: indexPath)
     todocell.textLabel?.text = todoItem.todo
-    print("Todo @ indexPath: \(previousIndex.section), \(previousIndex.row): ", todoItem.todoComplete)
-    todocell.detailTextLabel?.text = "Todo completed: \(todoItem.todoComplete)"
+    if todoItem.todoComplete {
+      let daysToCompleteToDo = todoItem.todoDuration / 86400
+      todocell.detailTextLabel?.text = "Todo completed in: \(daysToCompleteToDo) days"
+    } else {
+      todocell.detailTextLabel?.text = "Todo completed: \(todoItem.todoComplete)"
+    }
     return todocell
     
     /*
     // frc method
-    print("in cellForRowAt")
-    print("indexPath.row = \(indexPath.row)")
-    print("indexPath.section = \(indexPath.section)")
-    print("frc1 is: \(frc1.self)")
-    print("frc2 is: \(frc2.self)")
-
     if (indexPath.row % 4) == 0 {
 //    if indexPath.row == 0 {
       let todoObject = frc1.object(at: indexPath)
@@ -120,7 +113,6 @@ extension ViewController: UITableViewDataSource {
       let goalcell = tableView.dequeueReusableCell(withIdentifier: "GoalCell", for: indexPath)
       goalcell.textLabel?.text = goalObject.goal
       goalcell.detailTextLabel?.text = goalObject.goalCompleted.description
-      print("goalObject.goal: \(goalObject.goal)")
       return goalcell
     }
     let offset: Int = indexPath.row / 4 + 1
@@ -129,7 +121,6 @@ extension ViewController: UITableViewDataSource {
     let todocell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell", for: indexPath)
     todocell.textLabel?.text = todoObject.todo
     todocell.detailTextLabel?.text = todoObject.todoCompleted.description
-    print("todoObject.todo: \(todoObject.todo)")
     return todocell
     // end frc method
     //

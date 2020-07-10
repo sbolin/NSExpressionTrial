@@ -22,6 +22,7 @@ struct ResultGroup {
   let todoMinDate: Date
   let todoMaxDate: Date
   let todoDuration: Int
+  let goalDuration: Int
   
   init(dictInput: [String: Any]) {
     self.goal = dictInput["goal"] as! String
@@ -36,6 +37,7 @@ struct ResultGroup {
     self.todoMinDate = dictInput["todoMinDate"] as! Date
     self.todoMaxDate = dictInput["todoMaxDate"] as! Date
     self.todoDuration = dictInput["todoDuration"] as? Int ?? 0
+    self.goalDuration = dictInput["goalDuration"] as? Int ?? 0
   }
 }
 
@@ -47,7 +49,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
 
   var groupedResults = [[ResultGroup]]()
   var ungroupedResults = [ResultGroup]()
-  var anyDict = [String: Any]()
+  var resultDict = [String: Any]()
 
   
   var todoRowsInSection: Int?
@@ -155,7 +157,6 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   //MARK: - View Life Cycle
   override func viewDidLoad() {
     super.viewDidLoad()
-    CoreDataController.shared.createToDosIfNeeded()
     todayTableView.delegate = self
     todayTableView.dataSource = self
     
@@ -163,8 +164,8 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
 //    todayTableView.register(UITableViewCell.self, forCellReuseIdentifier: "ToDoCell")
     
     
-//    setupToDoTableView()
-//    setupGroupSubSections()
+    setupToDoTableView()
+//    setupGoalSubSections()
     setupToDoSubSections()
 //    populateCounts()
     //    setupByMonthController()
@@ -174,6 +175,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   
   func setupToDoTableView() {
     // temp
+    CoreDataController.shared.createToDosIfNeeded()
     let goalFetch: NSFetchRequest = Goal.goalFetchRequest()
     let todoFetch: NSFetchRequest = ToDo.todoFetchRequest()
     do {
@@ -217,7 +219,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   }
   
   //MARK: - Setup Data Array for History View
-  func setupGroupSubSections() {
+  func setupGoalSubSections() {
     
     //    let goalByMonthExp = NSExpression(forVariable: #keyPath(Goal.groupByMonth))
     //    let goalByMonthExp = NSExpression(format: "function(%@, 'monthGrouping')", \Goal.goalDateCreated)
@@ -342,10 +344,11 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   func setupToDoSubSections() {
     
     let todoExp = NSExpression(forKeyPath: \ToDo.todo )
-    let goalExp = NSExpression(forKeyPath: \ToDo.goal.goal)
     let todoDateCreatedExp = NSExpression(forKeyPath: \ToDo.todoDateCreated)
     let todoDateCompletedExp = NSExpression(forKeyPath: \ToDo.todoDateCompleted)
     let todoCompleteExp = NSExpression(forKeyPath: \ToDo.todoCompleted)
+    
+    let goalExp = NSExpression(forKeyPath: \ToDo.goal.goal)
     let goalDateCreatedExp = NSExpression(forKeyPath: \ToDo.goal.goalDateCreated)
     let goalDateCompletedExp = NSExpression(forKeyPath: \ToDo.goal.goalDateCompleted)
     let goalDateCompleteExp = NSExpression(forKeyPath: \ToDo.goal.goalCompleted)
@@ -353,6 +356,8 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     let todoDiffExp = NSExpression(format: "todoDateCompleted - todoDateCreated")
     let todoMinDate = NSExpression(forFunction: "min:", arguments: [todoDateCreatedExp])
     let todoMaxDate = NSExpression(forFunction: "max:", arguments: [todoDateCompletedExp])
+    let goalDiffExp = NSExpression(format: "goal.goalDateCompleted - goal.goalDateCreated")
+
 //    let todoCreatedSum = NSExpression(forFunction: "sum:", arguments: [todoDateCreatedExp])
 //    let todoCompletedSum = NSExpression(forFunction: "sum:", arguments: [todoDateCompletedExp])
 //    let todoCountExp = NSExpression(forFunction: "count:", arguments: [todoCompletedExp])
@@ -407,15 +412,10 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     todoDurationDesc.expression = todoDiffExp
     todoDurationDesc.expressionResultType = .integer64AttributeType // date difference
     
-//    let todoCreatedSumDesc = NSExpressionDescription()
-//    todoCreatedSumDesc.name = "todoCreatedSum"
-//    todoCreatedSumDesc.expression = todoCreatedSum
-//    todoCreatedSumDesc.expressionResultType = .integer16AttributeType
-    
-//    let todoCompletedSumDesc = NSExpressionDescription()
-//    todoCompletedSumDesc.name = "todoCompletedSum"
-//    todoCompletedSumDesc.expression = todoCompletedSum
-//    todoCompletedSumDesc.expressionResultType = .integer16AttributeType
+    let goalDurationDesc = NSExpressionDescription()
+    goalDurationDesc.name = "goalDuration"
+    goalDurationDesc.expression = goalDiffExp
+    goalDurationDesc.expressionResultType = .integer64AttributeType // date difference
     
     let todoMinDateDesc = NSExpressionDescription()
     todoMinDateDesc.name = "todoMinDate"
@@ -427,20 +427,12 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     todoMaxDateDesc.expression = todoMaxDate
     todoMaxDateDesc.expressionResultType = .dateAttributeType
     
-//    let todoCountDesc = NSExpressionDescription() // add predicate to count if true only
-//    todoCountDesc.name = "todoCompletedCount"
-//    todoCountDesc.expression = todoCountExp
-//    todoCountDesc.expressionResultType = .integer16AttributeType
-    
-    let sortDateDesc = NSSortDescriptor(keyPath: \ToDo.todoDateCreated, ascending: false)
+    let sortDateDesc = NSSortDescriptor(keyPath: \ToDo.todoDateCreated, ascending: true)
     
     let request = NSFetchRequest<NSDictionary>(entityName: "ToDo")
-//  request.resultType = .managedObjectResultType
     request.resultType = .dictionaryResultType
-//  request.propertiesToFetch = [goalDesc, todoDesc]// [#keyPath(ToDo.goal.goal), #keyPath(ToDo.todo)]
-    request.propertiesToFetch = [goalDesc, todoDesc, goalDateCreatedDesc, goalDateCompletedDesc, goalCompleteDesc, todoDateCreatedDesc, todoDateCompletedDesc, todoCompleteDesc, todoMinDateDesc, todoMaxDateDesc, todoDurationDesc]
-//  todoCountDesc, goalSumDesc, todoCreatedSumDesc, todoCompletedSumDesc, goalCompletedDesc,
-//  request.propertiesToGroupBy = [goalDesc, todoDesc, todoCompletedDesc]
+    request.propertiesToFetch = [goalDesc, todoDesc, goalDateCreatedDesc, goalDateCompletedDesc, goalCompleteDesc, todoDateCreatedDesc, todoDateCompletedDesc, todoCompleteDesc, todoMinDateDesc, todoMaxDateDesc, todoDurationDesc, goalDurationDesc]
+    request.propertiesToGroupBy = [goalDesc, todoDesc, goalDateCreatedDesc, goalDateCompletedDesc, goalCompleteDesc, todoDateCreatedDesc, todoDateCompletedDesc, todoCompleteDesc]
     request.sortDescriptors = [sortDateDesc]
     request.returnsObjectsAsFaults = false
     
@@ -449,9 +441,9 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
             
       results.forEach { (result) in
         for (key, value) in result {
-          anyDict[key as! String] = value
+          resultDict[key as! String] = value
         }
-        ungroupedResults.append(ResultGroup(dictInput: anyDict))
+        ungroupedResults.append(ResultGroup(dictInput: resultDict))
       }
     } catch {
       NSLog("Error fetching entity: %@", error.localizedDescription)
