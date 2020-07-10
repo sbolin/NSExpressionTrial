@@ -14,6 +14,7 @@ struct ResultGroup {
   let todo: String
   let todoCreated: Date
   let todoCompleted: Date
+  let goalComplete: Bool
   let goalCreated: Date
   let goalCompleted: Date
   let todoComplete: Bool
@@ -27,12 +28,13 @@ struct ResultGroup {
     self.todo = dictInput["todo"] as! String
     self.todoCreated = dictInput["todoCreated"] as! Date
     self.todoCompleted = dictInput["todoCompleted"] as? Date ?? Date()
+    self.goalComplete = dictInput["goalComplete"] as! Bool
     self.goalCreated = dictInput["goalCreated"] as! Date
     self.goalCompleted = dictInput["goalCompleted"] as? Date ?? Date()
     self.todoComplete = dictInput["todoComplete"] as! Bool
     self.todoCompletedSum = dictInput["todoCompletedSum"] as? Int ?? 0
-    self.todoMinDate = dictInput["todoMinDate"] as? Date ?? Date()
-    self.todoMaxDate = dictInput["todoMaxDate"] as? Date ?? Date()
+    self.todoMinDate = dictInput["todoMinDate"] as! Date
+    self.todoMaxDate = dictInput["todoMaxDate"] as! Date
     self.todoDuration = dictInput["todoDuration"] as? Int ?? 0
   }
 }
@@ -58,7 +60,10 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   let date = Date()
   // end date components
   
+  //MARK:- IBOutlets
+  @IBOutlet weak var todayTableView: UITableView!
   
+  //MARK: - FRC
   var fetchedToDoYearResultsController = CoreDataController.shared.fetchedToDoByYearController
   var fetchedToDoMonthResultsController = CoreDataController.shared.fetchedToDoByMonthController
   var fetchedToDoWeekResultsController = CoreDataController.shared.fetchedToDoByWeekController
@@ -147,26 +152,21 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     return NSPredicate(format: "%K = %d", #keyPath(ToDo.todoDateCreated), true)
   }()
   
-  //MARK:- IBOutlets
-  @IBOutlet weak var todayTableView: UITableView!
-  
   //MARK: - View Life Cycle
   override func viewDidLoad() {
     super.viewDidLoad()
+    CoreDataController.shared.createToDosIfNeeded()
     todayTableView.delegate = self
     todayTableView.dataSource = self
     
-    todayTableView.register(UITableViewCell.self, forCellReuseIdentifier: "GoalCell")
-    todayTableView.register(UITableViewCell.self, forCellReuseIdentifier: "ToDoCell")
+//    todayTableView.register(UITableViewCell.self, forCellReuseIdentifier: "GoalCell")
+//    todayTableView.register(UITableViewCell.self, forCellReuseIdentifier: "ToDoCell")
     
-    print("setupToDoTableView() called")
-    setupToDoTableView()
-    print("\nsetupGroupSubSections() called")
-    setupGroupSubSections()
-    print("\nsetupToDoSubSections() called")
+    
+//    setupToDoTableView()
+//    setupGroupSubSections()
     setupToDoSubSections()
-    print("\npopulateCounts() called")
-    populateCounts()
+//    populateCounts()
     //    setupByMonthController()
     todayTableView.reloadData()
     
@@ -174,7 +174,6 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   
   func setupToDoTableView() {
     // temp
-    CoreDataController.shared.createToDosIfNeeded()
     let goalFetch: NSFetchRequest = Goal.goalFetchRequest()
     let todoFetch: NSFetchRequest = ToDo.todoFetchRequest()
     do {
@@ -346,18 +345,17 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     let goalExp = NSExpression(forKeyPath: \ToDo.goal.goal)
     let todoDateCreatedExp = NSExpression(forKeyPath: \ToDo.todoDateCreated)
     let todoDateCompletedExp = NSExpression(forKeyPath: \ToDo.todoDateCompleted)
-    let todoCompletedExp = NSExpression(forKeyPath: \ToDo.todoCompleted)
+    let todoCompleteExp = NSExpression(forKeyPath: \ToDo.todoCompleted)
     let goalDateCreatedExp = NSExpression(forKeyPath: \ToDo.goal.goalDateCreated)
     let goalDateCompletedExp = NSExpression(forKeyPath: \ToDo.goal.goalDateCompleted)
+    let goalDateCompleteExp = NSExpression(forKeyPath: \ToDo.goal.goalCompleted)
 
-    
     let todoDiffExp = NSExpression(format: "todoDateCompleted - todoDateCreated")
-//    let todoCreatedSum = NSExpression(forFunction: "sum:", arguments: [todoDateCreatedExp])
-//    let todoCompletedSum = NSExpression(forFunction: "sum:", arguments: [todoDateCompletedExp])
     let todoMinDate = NSExpression(forFunction: "min:", arguments: [todoDateCreatedExp])
     let todoMaxDate = NSExpression(forFunction: "max:", arguments: [todoDateCompletedExp])
-    
-    let todoCountExp = NSExpression(forFunction: "count:", arguments: [todoCompletedExp])
+//    let todoCreatedSum = NSExpression(forFunction: "sum:", arguments: [todoDateCreatedExp])
+//    let todoCompletedSum = NSExpression(forFunction: "sum:", arguments: [todoDateCompletedExp])
+//    let todoCountExp = NSExpression(forFunction: "count:", arguments: [todoCompletedExp])
     
     let todoDesc = NSExpressionDescription()
     todoDesc.name = "todo"
@@ -389,10 +387,15 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     goalDateCompletedDesc.expression = goalDateCompletedExp
     goalDateCompletedDesc.expressionResultType = .dateAttributeType
     
-    let todoCompletedDesc = NSExpressionDescription()
-    todoCompletedDesc.name = "todoComplete"
-    todoCompletedDesc.expression = todoCompletedExp
-    todoCompletedDesc.expressionResultType = .booleanAttributeType
+    let goalCompleteDesc = NSExpressionDescription()
+    goalCompleteDesc.name = "goalComplete"
+    goalCompleteDesc.expression = goalDateCompleteExp
+    goalCompleteDesc.expressionResultType = .booleanAttributeType
+    
+    let todoCompleteDesc = NSExpressionDescription()
+    todoCompleteDesc.name = "todoComplete"
+    todoCompleteDesc.expression = todoCompleteExp
+    todoCompleteDesc.expressionResultType = .booleanAttributeType
     
     //    let todoCount = NSExpressionDescription()
     //    todoCount.name = "todoCountDateCreated"
@@ -429,61 +432,48 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
 //    todoCountDesc.expression = todoCountExp
 //    todoCountDesc.expressionResultType = .integer16AttributeType
     
-    
     let sortDateDesc = NSSortDescriptor(keyPath: \ToDo.todoDateCreated, ascending: false)
     
     let request = NSFetchRequest<NSDictionary>(entityName: "ToDo")
-//        request.resultType = .managedObjectResultType
+//  request.resultType = .managedObjectResultType
     request.resultType = .dictionaryResultType
-//    request.propertiesToFetch = [goalDesc, todoDesc]// [#keyPath(ToDo.goal.goal), #keyPath(ToDo.todo)]
-    request.propertiesToFetch = [goalDesc, todoDesc, todoDateCreatedDesc, todoDateCompletedDesc, goalDateCreatedDesc, goalDateCompletedDesc, todoCompletedDesc, todoMinDateDesc, todoMaxDateDesc, todoDurationDesc]
-    // todoCountDesc, goalSumDesc, todoCreatedSumDesc, todoCompletedSumDesc, goalCompletedDesc,
-    
- //   request.propertiesToGroupBy = [goalDesc, todoDesc, todoCompletedDesc]
+//  request.propertiesToFetch = [goalDesc, todoDesc]// [#keyPath(ToDo.goal.goal), #keyPath(ToDo.todo)]
+    request.propertiesToFetch = [goalDesc, todoDesc, goalDateCreatedDesc, goalDateCompletedDesc, goalCompleteDesc, todoDateCreatedDesc, todoDateCompletedDesc, todoCompleteDesc, todoMinDateDesc, todoMaxDateDesc, todoDurationDesc]
+//  todoCountDesc, goalSumDesc, todoCreatedSumDesc, todoCompletedSumDesc, goalCompletedDesc,
+//  request.propertiesToGroupBy = [goalDesc, todoDesc, todoCompletedDesc]
     request.sortDescriptors = [sortDateDesc]
     request.returnsObjectsAsFaults = false
     
     do {
       let results = try CoreDataController.shared.managedContext.fetch(request)
             
-      print("results:")
-      print(results)
-      print(results.count)
-      
-      print("each result:")
       results.forEach { (result) in
-        print("result:")
-        print(result)
         for (key, value) in result {
           anyDict[key as! String] = value
         }
-        
         ungroupedResults.append(ResultGroup(dictInput: anyDict))
-
-        
-        print("ungroupedResults:")
-        print(ungroupedResults)
-        
       }
     } catch {
       NSLog("Error fetching entity: %@", error.localizedDescription)
     }
-    
-    let groupedDictionary = Dictionary(grouping: ungroupedResults) { (item) -> String in
-      return item.goal
+    let groupedDictionary = Dictionary(grouping: ungroupedResults) { (item) -> Date in
+      return item.goalCreated
     }
-    
-    let keys = groupedDictionary.keys.sorted()
-    
+    let keys = groupedDictionary.keys.sorted().reversed()
     keys.forEach({
       groupedResults.append(groupedDictionary[$0]!)
     })
-    print("groupedResults:")
-    print(groupedResults)
-    //        tableView.reloadData()
+    print("\n\ngroupedResults data:")
+    print("sections: \(groupedResults.count)")
+    for section in (0..<groupedResults.count) {
+      for row in (0..<groupedResults[section].count) {
+        print("section \(section), row \(row): \n\(groupedResults[section][row])")
+      }
+    }
+    todayTableView.reloadData()
   }
   
-  //MARK: - Goal and Todo Counts
+  //MARK: - PopulateCounts Goal and Todo Counts
   func populateCounts() {
     
     //MARK: - Total Counts
@@ -565,6 +555,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     }
   }
   
+  //MARK: - setupByMonthController
   func setupByMonthController() {
     
     //    fetchedToDoResultsController.delegate = self
@@ -631,10 +622,9 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     let refreshDate = calendar.startOfDay(for: .currentTimeTomorrow)
     //    cache(content, until: refreshDate.addingTimeInterval(100)) // save current todo, check tomorrow if completed or not. If completed, add new Goal. Note: add 100s 'buffer' just in case
   }
-  
-  
 }
 
+//MARK: - Date Extension
 extension Date {
   func yearGrouping() -> String {
     let dateFormatter = DateFormatter()
@@ -711,25 +701,3 @@ extension Date {
     return Date().sameTimeNextMonth(inDirection: .backward)
   }
 }
-
-
-
-/*
- allGoalPredicate
- pastDayGoalPredicate
- pastWeekGoalPredicate
- pastMonthGoalPredicate
- past6MonthGoalPredicate
- pastYearGoalPredicate
- goalCompletedPredicate
- goalByMonthPredicate
- 
- allToDoPredicate
- pastDayToDoPredicate
- pastWeekToDoPredicate
- pastMonthToDoPredicate
- past6MonthToDoPredicate
- pastYearToDoPredicate
- todoCompletedPredicate
- todoByMonthPredicate
- */
