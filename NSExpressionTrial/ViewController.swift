@@ -24,6 +24,54 @@ struct ResultGroup {
   let todoDuration: Int
   let goalDuration: Int
   
+  var todoGroupByYear: String {
+    get {
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateFormat = "yyyy"
+      return dateFormatter.string(from: todoCreated)
+    }
+  }
+  
+  var todoGroupByMonth: String {
+    get {
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateFormat = "MMM yyyy"
+      return dateFormatter.string(from: todoCreated)
+    }
+  }
+  
+  var todoGroupByWeek: String {
+    get {
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateFormat = "w Y"
+      return dateFormatter.string(from: todoCreated)
+    }
+  }
+  
+  var goalGroupByYear: String {
+    get {
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateFormat = "yyyy"
+      return dateFormatter.string(from: goalCreated)
+    }
+  }
+  
+  var goalGroupByMonth: String {
+    get {
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateFormat = "MMM yyyy"
+      return dateFormatter.string(from: goalCreated)
+    }
+  }
+  
+  var goalGroupByWeek: String {
+    get {
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateFormat = "w Y"
+      return dateFormatter.string(from: goalCreated)
+    }
+  }
+  
   init(dictInput: [String: Any]) {
     self.goal = dictInput["goal"] as! String
     self.todo = dictInput["todo"] as! String
@@ -470,7 +518,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     todoMaxDateDesc.expression = todoMaxDate
     todoMaxDateDesc.expressionResultType = .dateAttributeType
     
-    let sortDateDesc = NSSortDescriptor(keyPath: \ToDo.todoDateCreated, ascending: true)
+    let sortDateDesc = NSSortDescriptor(keyPath: \ToDo.goal.goalDateCreated, ascending: true)
     
     let request = NSFetchRequest<NSDictionary>(entityName: "ToDo")
     request.resultType = .dictionaryResultType
@@ -479,7 +527,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     request.sortDescriptors = [sortDateDesc]
     request.returnsObjectsAsFaults = false
     
-// filter by date
+/* filter by date
     var startComponents = DateComponents()
     startComponents.year = 2019
     startComponents.month = 7
@@ -499,6 +547,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
 
     request.predicate = NSPredicate(format: "%K BETWEEN {%@, %@}", #keyPath(ToDo.goal.goalDateCreated), startDate as CVarArg, endDate as CVarArg)
 // end filter by date
+*/
     
     do {
       let results = try CoreDataController.shared.managedContext.fetch(request)
@@ -512,10 +561,12 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     } catch {
       NSLog("Error fetching entity: %@", error.localizedDescription)
     }
-    let groupedDictionary = Dictionary(grouping: ungroupedResults) { (item) -> Date in
-      return item.goalCreated
+    // group by month created, not by item created date
+    let groupedDictionary = Dictionary(grouping: ungroupedResults) { (item) -> String in // Date in
+//      return item.goalCreated
+      return item.goalGroupByMonth
     }
-    let keys = groupedDictionary.keys.sorted().reversed()
+    let keys = groupedDictionary.keys.sorted()
     keys.forEach({
       groupedResults.append(groupedDictionary[$0]!)
     })
@@ -682,28 +733,6 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     //    cache(content, until: refreshDate.addingTimeInterval(100)) // save current todo, check tomorrow if completed or not. If completed, add new Goal. Note: add 100s 'buffer' just in case
   }
 }
-
-//MARK: - Date Extension
-extension Date {
-  func yearGrouping() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy"
-    return dateFormatter.string(from: self)
-  }
-  
-  func monthGrouping() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "MMM yyyy"
-    return dateFormatter.string(from: self)
-  }
-  
-  func weekGrouping() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "w Y"
-    return dateFormatter.string(from: self)
-  }
-}
-
 
 extension Date {
   func sameTimeNextDay(

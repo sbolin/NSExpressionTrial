@@ -33,7 +33,7 @@ extension ViewController: UITableViewDelegate {
     let view = UITableViewHeaderFooterView()
     
     let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "dd-MMM-YY"
+    dateFormatter.dateFormat = "MMM-YY" // "dd-MMM-YY"
     view.textLabel?.textColor = UIColor.systemOrange
     view.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
     view.textLabel?.frame = view.frame
@@ -44,9 +44,9 @@ extension ViewController: UITableViewDelegate {
     if groupedResults.count == 0 {
       return nil
     }
-    if let date = groupedResults[section].first?.goalCreated {
-      let title = dateFormatter.string(from: date)
-          view.textLabel?.text = title
+    if let date = groupedResults[section].first?.goalGroupByMonth {
+//      let title = dateFormatter.string(from: date)
+          view.textLabel?.text = date //title
     }
     return view
   }
@@ -55,13 +55,21 @@ extension ViewController: UITableViewDelegate {
 //MARK: - TableView DataSource
 extension ViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
-
+    print("numberOfSections: \(groupedResults.count)")
 //    return frc1.sections?.count ?? 0
     return groupedResults.count > 0 ? groupedResults.count : 1
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-      return groupedResults[section].count + 1 // 1 goal + count
+    todoRowsInSection = groupedResults[section].count
+    if var numberOfRows = todoRowsInSection  {
+      goalRowsInSection = (numberOfRows - 1) / 3 + 1
+      numberOfRows += goalRowsInSection ?? 1
+      print("numberOfRowsInSection \(section) \(numberOfRows)")
+      return numberOfRows
+    } else {
+      return 0
+    }
     /*
     // baseed on frc
     todoRowsInSection = frc1.sections?[section].numberOfObjects
@@ -78,7 +86,7 @@ extension ViewController: UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
-    if indexPath.row % 4 == 0 {
+    if (indexPath.row % 4) == 0 {
       let goalItem = groupedResults[indexPath.section][indexPath.row]
       let goalcell = tableView.dequeueReusableCell(withIdentifier: "GoalCell", for: indexPath)
       goalcell.backgroundColor = .systemGray6
