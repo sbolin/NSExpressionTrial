@@ -167,17 +167,49 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     setupToDoTableView()
 //    setupGoalSubSections()
     setupToDoSubSections()
-//    populateCounts()
-    //    setupByMonthController()
+    populateCounts()
+    setupByMonthController()
     todayTableView.reloadData()
     
   }
   
+  //MARK: 1. setupToDoTableView
   func setupToDoTableView() {
+    print("\n\n 1. setupToDoTableView - get counts using fetch and filter results\n")
+
     // temp
     CoreDataController.shared.createToDosIfNeeded()
     let goalFetch: NSFetchRequest = Goal.goalFetchRequest()
     let todoFetch: NSFetchRequest = ToDo.todoFetchRequest()
+    
+    // add in time predicate
+    // filter by date
+    var startComponents = DateComponents()
+    startComponents.year = 2019
+    startComponents.month = 7
+    startComponents.day = 1
+    startComponents.hour = 0
+    startComponents.minute = 0
+    let startDate = Calendar.current.date(from: startComponents) ?? Date()
+    
+    var endComponents = DateComponents()
+    endComponents.year = 2019
+    endComponents.month = 7
+    endComponents.day = 31
+    endComponents.hour = 23
+    endComponents.minute = 59
+    let endDate = Calendar.current.date(from: endComponents) ?? Date()
+    
+    let goalPredicate = NSPredicate(format: "%K BETWEEN {%@, %@}", #keyPath(Goal.goalDateCreated), startDate as CVarArg, endDate as CVarArg)
+    
+    let todoPredicate = NSPredicate(format: "%K BETWEEN {%@, %@}", #keyPath(ToDo.goal.goalDateCreated), startDate as CVarArg, endDate as CVarArg)
+    
+    goalFetch.predicate = goalPredicate
+    todoFetch.predicate = todoPredicate
+    
+    // end filter by date
+    
+    
     do {
       goals = try CoreDataController.shared.managedContext.fetch(goalFetch)
       todolist = try CoreDataController.shared.managedContext.fetch(todoFetch)
@@ -206,20 +238,28 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
       goal.goalCompleted == true
     }.count
     
+    let incompleteGoalCount = goalCount - completedGoalCount
+    let incompleteToDoCount = todoCount - completeTodos
+    
+    print("Counts from NSFetchRequest with result filtered")
     print("Goal Count: \(goalCount)")
     print("Todo Count: \(todoCount)")
     print("Completed Goal count: \(completedGoalCount)")
+    print("Incomplete Goal count: \(incompleteGoalCount)")
     print("Completed ToDo count: \(completedToDoCount ?? 0)")
     print("Completed ToDo count(2): \(completeTodos)")
+    print("Incompleted ToDo count: \(incompleteToDoCount)")
     print("\n\n")
     
     //    if fetchedGoalResultsController == nil {
     //      fetchedGoalResultsController = CoreDataController.shared.fetchedGoalResultsController
     //    }
   }
-  
-  //MARK: - Setup Data Array for History View
+    
+  //MARK: 2. setupGoalSubSections
   func setupGoalSubSections() {
+    print("\n\n 2. setupGoalSubSections - get counts using expressions on Goal entity\n")
+
     
     //    let goalByMonthExp = NSExpression(forVariable: #keyPath(Goal.groupByMonth))
     //    let goalByMonthExp = NSExpression(format: "function(%@, 'monthGrouping')", \Goal.goalDateCreated)
@@ -341,7 +381,10 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     }
   }
   
+  //MARK: 3. setupToDoSubSections
   func setupToDoSubSections() {
+    
+    print("\n\n 3. setupToDoSubSections - get counts using expressions on ToDo entity, create Struct dataSource for Tableview\n")
     
     let todoExp = NSExpression(forKeyPath: \ToDo.todo )
     let todoDateCreatedExp = NSExpression(forKeyPath: \ToDo.todoDateCreated)
@@ -436,6 +479,27 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     request.sortDescriptors = [sortDateDesc]
     request.returnsObjectsAsFaults = false
     
+// filter by date
+    var startComponents = DateComponents()
+    startComponents.year = 2019
+    startComponents.month = 7
+    startComponents.day = 1
+    startComponents.hour = 0
+    startComponents.minute = 0
+    let startDate = Calendar.current.date(from: startComponents) ?? Date()
+    
+    var endComponents = DateComponents()
+    endComponents.year = 2019
+    endComponents.month = 7
+    endComponents.day = 31
+    endComponents.hour = 23
+    endComponents.minute = 59
+    let endDate = Calendar.current.date(from: endComponents) ?? Date()
+    
+
+    request.predicate = NSPredicate(format: "%K BETWEEN {%@, %@}", #keyPath(ToDo.goal.goalDateCreated), startDate as CVarArg, endDate as CVarArg)
+// end filter by date
+    
     do {
       let results = try CoreDataController.shared.managedContext.fetch(request)
             
@@ -465,10 +529,12 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     todayTableView.reloadData()
   }
   
-  //MARK: - PopulateCounts Goal and Todo Counts
+  //MARK: 4. PopulateCounts Goal and Todo Counts
   func populateCounts() {
+    print("\n\n 4. populateCounts - get counts using predicates\n")
+
     
-    //MARK: - Total Counts
+    //MARK: Total Counts
     guard let allGoalCount = getEntityCount(for: "Goal", with: allGoalPredicate) else { return }
     guard let allItemCount = getEntityCount(for: "ToDo", with: allToDoPredicate) else { return }
     
@@ -476,7 +542,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     guard let doneItemCount = getEntityCount(for: "ToDo", with: todoCompletedPredicate) else { return }
     
     
-    //MARK: - Year Counts
+    //MARK: Year Counts
     guard let yearGoalCount = getEntityCount(for: "Goal", with: pastYearGoalPredicate) else { return }
     guard let yearItemCount = getEntityCount(for: "ToDo", with: pastYearToDoPredicate) else { return }
     
@@ -486,7 +552,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     guard let doneYearGoalCount = getEntityCount(for: "Goal", with: yearGoalCompletedPredicate) else { return }
     guard let doneYearItemCount = getEntityCount(for: "ToDo", with: yearItemCompletedPredicate) else { return }
     
-    //MARK: - 6 Month Counts
+    //MARK: 6 Month Counts
     guard let sixMonthGoalCount = getEntityCount(for: "Goal", with: past6MonthGoalPredicate) else { return }
     guard let sixMonthItemCount = getEntityCount(for: "ToDo", with: past6MonthToDoPredicate) else { return }
     
@@ -497,7 +563,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     guard let done6MonthItemCount = getEntityCount(for: "ToDo", with: sixMonthItemCompletedPredicate) else { return }
     
     
-    //MARK: - Month Counts
+    //MARK: Month Counts
     guard let monthGoalCount = getEntityCount(for: "Goal", with: pastMonthGoalPredicate) else { return }
     guard let monthItemCount = getEntityCount(for: "ToDo", with: pastMonthToDoPredicate) else { return }
     
@@ -547,8 +613,9 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     }
   }
   
-  //MARK: - setupByMonthController
+  //MARK: 5. setupByMonthController - frc
   func setupByMonthController() {
+    print("\n\n 5. setupByMonthController - frc\n")
     
     //    fetchedToDoResultsController.delegate = self
     //    fetchedGoalResultsController.delegate = self
