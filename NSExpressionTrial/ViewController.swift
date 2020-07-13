@@ -9,86 +9,6 @@
 import UIKit
 import CoreData
 
-struct ResultGroup {
-  let goal: String
-  let todo: String
-  let todoCreated: Date
-  let todoCompleted: Date
-  let goalComplete: Bool
-  let goalCreated: Date
-  let goalCompleted: Date
-  let todoComplete: Bool
-  let todoCompletedSum: Int
-  let todoMinDate: Date
-  let todoMaxDate: Date
-  let todoDuration: Int
-  let goalDuration: Int
-  
-  var todoGroupByYear: String {
-    get {
-      let dateFormatter = DateFormatter()
-      dateFormatter.dateFormat = "yyyy"
-      return dateFormatter.string(from: todoCreated)
-    }
-  }
-  
-  var todoGroupByMonth: String {
-    get {
-      let dateFormatter = DateFormatter()
-      dateFormatter.dateFormat = "MMM yyyy"
-      return dateFormatter.string(from: todoCreated)
-    }
-  }
-  
-  var todoGroupByWeek: String {
-    get {
-      let dateFormatter = DateFormatter()
-      dateFormatter.dateFormat = "w Y"
-      return dateFormatter.string(from: todoCreated)
-    }
-  }
-  
-  var goalGroupByYear: String {
-    get {
-      let dateFormatter = DateFormatter()
-      dateFormatter.dateFormat = "yyyy"
-      return dateFormatter.string(from: goalCreated)
-    }
-  }
-  
-  var goalGroupByMonth: String {
-    get {
-      let dateFormatter = DateFormatter()
-      dateFormatter.dateFormat = "MMM yyyy"
-      return dateFormatter.string(from: goalCreated)
-    }
-  }
-  
-  var goalGroupByWeek: String {
-    get {
-      let dateFormatter = DateFormatter()
-      dateFormatter.dateFormat = "w Y"
-      return dateFormatter.string(from: goalCreated)
-    }
-  }
-  
-  init(dictInput: [String: Any]) {
-    self.goal = dictInput["goal"] as! String
-    self.todo = dictInput["todo"] as! String
-    self.todoCreated = dictInput["todoCreated"] as! Date
-    self.todoCompleted = dictInput["todoCompleted"] as? Date ?? Date()
-    self.goalComplete = dictInput["goalComplete"] as! Bool
-    self.goalCreated = dictInput["goalCreated"] as! Date
-    self.goalCompleted = dictInput["goalCompleted"] as? Date ?? Date()
-    self.todoComplete = dictInput["todoComplete"] as! Bool
-    self.todoCompletedSum = dictInput["todoCompletedSum"] as? Int ?? 0
-    self.todoMinDate = dictInput["todoMinDate"] as! Date
-    self.todoMaxDate = dictInput["todoMaxDate"] as! Date
-    self.todoDuration = dictInput["todoDuration"] as? Int ?? 0
-    self.goalDuration = dictInput["goalDuration"] as? Int ?? 0
-  }
-}
-
 class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   
   //MARK: - Properties
@@ -216,7 +136,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
 //    setupGoalSubSections()
     setupToDoSubSections()
     populateCounts()
-    setupByMonthController()
+//    setupByMonthController()  // removed to new viewcontroller
     todayTableView.reloadData()
     
   }
@@ -299,9 +219,6 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     print("Incompleted ToDo count: \(incompleteToDoCount)")
     print("\n\n")
     
-    //    if fetchedGoalResultsController == nil {
-    //      fetchedGoalResultsController = CoreDataController.shared.fetchedGoalResultsController
-    //    }
   }
     
   //MARK: 2. setupGoalSubSections
@@ -527,28 +444,6 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     request.sortDescriptors = [sortDateDesc]
     request.returnsObjectsAsFaults = false
     
-/* filter by date
-    var startComponents = DateComponents()
-    startComponents.year = 2019
-    startComponents.month = 7
-    startComponents.day = 1
-    startComponents.hour = 0
-    startComponents.minute = 0
-    let startDate = Calendar.current.date(from: startComponents) ?? Date()
-    
-    var endComponents = DateComponents()
-    endComponents.year = 2019
-    endComponents.month = 7
-    endComponents.day = 31
-    endComponents.hour = 23
-    endComponents.minute = 59
-    let endDate = Calendar.current.date(from: endComponents) ?? Date()
-    
-
-    request.predicate = NSPredicate(format: "%K BETWEEN {%@, %@}", #keyPath(ToDo.goal.goalDateCreated), startDate as CVarArg, endDate as CVarArg)
-// end filter by date
-*/
-    
     do {
       let results = try CoreDataController.shared.managedContext.fetch(request)
             
@@ -566,10 +461,20 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
 //      return item.goalCreated
       return item.goalGroupByMonth
     }
+    
     let keys = groupedDictionary.keys.sorted()
+    print("keys: \(keys)")
+
     keys.forEach({
       groupedResults.append(groupedDictionary[$0]!)
-    })
+      })
+      
+    // TODO: sort groupedResults
+
+    
+      
+    
+
     print("\n\ngroupedResults data:")
     print("sections: \(groupedResults.count)")
     for section in (0..<groupedResults.count) {
@@ -662,70 +567,6 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
       print("count not fetched \(error), \(error.userInfo)")
       return nil
     }
-  }
-  
-  //MARK: 5. setupByMonthController - frc
-  func setupByMonthController() {
-    print("\n\n 5. setupByMonthController - frc\n")
-    
-    //    fetchedToDoResultsController.delegate = self
-    //    fetchedGoalResultsController.delegate = self
-    //    fetchedToDoResultsController.fetchRequest.predicate = allToDoPredicate
-    //    fetchedGoalResultsController.fetchRequest.predicate = allGoalPredicate
-    
-    fetchedToDoAllResultsController.delegate = self
-    fetchedGoalAllResultsController.delegate = self
-    //    fetchedToDoAllResultsController.fetchRequest.predicate = todoCompletedPredicate
-    //    fetchedGoalAllResultsController.fetchRequest.predicate = goalCompletedPredicate
-    fetchedToDoAllResultsController.fetchRequest.predicate = allToDoPredicate
-    fetchedGoalAllResultsController.fetchRequest.predicate = allGoalPredicate
-    //
-    //    fetchedToDoYearResultsController.delegate = self
-    //    fetchedGoalYearResultsController.delegate = self
-    //    fetchedToDoYearResultsController.fetchRequest.predicate = todoCompletedPredicate
-    //    fetchedGoalYearResultsController.fetchRequest.predicate = goalCompletedPredicate
-    //
-    //    fetchedToDoMonthResultsController.delegate = self
-    //    fetchedGoalMonthResultsController.delegate = self
-    //    fetchedToDoMonthResultsController.fetchRequest.predicate = todoCompletedPredicate
-    //    fetchedGoalMonthResultsController.fetchRequest.predicate = goalCompletedPredicate
-    //
-    //    fetchedToDoWeekResultsController.delegate = self
-    //    fetchedGoalWeekResultsController.delegate = self
-    //    fetchedToDoWeekResultsController.fetchRequest.predicate = todoCompletedPredicate
-    //    fetchedGoalWeekResultsController.fetchRequest.predicate = goalCompletedPredicate
-    
-    frc1 = fetchedToDoAllResultsController
-    frc2 = fetchedGoalAllResultsController
-    
-    do {
-      try frc1.performFetch()
-    } catch {
-      print("Fetch frc1 failed")
-    }
-    do {
-      try frc2.performFetch()
-    } catch {
-      print("Fetch frc2 failed")
-    }
-    
-    let todoSections = frc1.sections
-    let todoSectionCount = todoSections?.count
-    let todos = frc1.fetchedObjects
-    let todosCount = todos?.count
-    print("frc1.sections: \(todoSections)")
-    print("todoSectionCount: \(todoSectionCount ?? 0)")
-    print("frc1.todos: \(todos)")
-    print("todosCount: \(todosCount ?? 0)")
-    
-    let goalSections = frc2.sections
-    let goalSectionCount = goalSections?.count
-    let goals = frc2.fetchedObjects
-    let goalsCount = goals?.count
-    print("frc2.sections: \(goalSections)")
-    print("goalSectionCount: \(goalSectionCount ?? 0)")
-    print("frc2.todos: \(goals)")
-    print("goalsCount: \(goalsCount ?? 0)")
   }
   
   func contentDidLoad(_ content: Goal) {

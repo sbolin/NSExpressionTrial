@@ -20,6 +20,9 @@
 		15AC50B424AC91FD00A9759C /* ToDo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AC50B024AC91FC00A9759C /* ToDo+CoreDataProperties.swift */; };
 		15AC50B524AC91FD00A9759C /* Goal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AC50B124AC91FC00A9759C /* Goal+CoreDataClass.swift */; };
 		15AC50B624AC91FD00A9759C /* Goal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AC50B224AC91FC00A9759C /* Goal+CoreDataProperties.swift */; };
+		15DE011C24BCCF7A00E8082E /* ResultGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE011B24BCCF7A00E8082E /* ResultGroup.swift */; };
+		15DE011E24BCD05D00E8082E /* FRCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE011D24BCD05D00E8082E /* FRCViewController.swift */; };
+		15DE012024BCD15300E8082E /* FRCViewController+Delegate+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15DE011F24BCD15300E8082E /* FRCViewController+Delegate+DataSource.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +41,9 @@
 		15AC50B024AC91FC00A9759C /* ToDo+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ToDo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		15AC50B124AC91FC00A9759C /* Goal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Goal+CoreDataClass.swift"; sourceTree = "<group>"; };
 		15AC50B224AC91FC00A9759C /* Goal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Goal+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		15DE011B24BCCF7A00E8082E /* ResultGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultGroup.swift; sourceTree = "<group>"; };
+		15DE011D24BCD05D00E8082E /* FRCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FRCViewController.swift; sourceTree = "<group>"; };
+		15DE011F24BCD15300E8082E /* FRCViewController+Delegate+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FRCViewController+Delegate+DataSource.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +81,8 @@
 				15AC508C24AB1E7300A9759C /* SceneDelegate.swift */,
 				15AC508E24AB1E7300A9759C /* ViewController.swift */,
 				157877CD24AE6D4100D2E931 /* ViewController+Delegate+DataSource.swift */,
+				15DE011D24BCD05D00E8082E /* FRCViewController.swift */,
+				15DE011F24BCD15300E8082E /* FRCViewController+Delegate+DataSource.swift */,
 				15AC509024AB1E7300A9759C /* Main.storyboard */,
 				15AC509324AB1E7D00A9759C /* Assets.xcassets */,
 				15AC509524AB1E7D00A9759C /* LaunchScreen.storyboard */,
@@ -92,6 +100,7 @@
 				15AC50B024AC91FC00A9759C /* ToDo+CoreDataProperties.swift */,
 				15AC509E24AB1F3D00A9759C /* CoreDataController.swift */,
 				15AC50AC24AC90CA00A9759C /* Focus.xcdatamodeld */,
+				15DE011B24BCCF7A00E8082E /* ResultGroup.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -167,11 +176,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15DE011E24BCD05D00E8082E /* FRCViewController.swift in Sources */,
 				15AC508F24AB1E7300A9759C /* ViewController.swift in Sources */,
+				15DE011C24BCCF7A00E8082E /* ResultGroup.swift in Sources */,
 				15AC508B24AB1E7300A9759C /* AppDelegate.swift in Sources */,
 				15AC50B524AC91FD00A9759C /* Goal+CoreDataClass.swift in Sources */,
 				15AC50AE24AC90CA00A9759C /* Focus.xcdatamodeld in Sources */,
 				15AC50B424AC91FD00A9759C /* ToDo+CoreDataProperties.swift in Sources */,
+				15DE012024BCD15300E8082E /* FRCViewController+Delegate+DataSource.swift in Sources */,
 				15AC50B624AC91FD00A9759C /* Goal+CoreDataProperties.swift in Sources */,
 				157877CE24AE6D4200D2E931 /* ViewController+Delegate+DataSource.swift in Sources */,
 				15AC509F24AB1F3D00A9759C /* CoreDataController.swift in Sources */,
