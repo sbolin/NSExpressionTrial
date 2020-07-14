@@ -16,17 +16,16 @@ extension ViewController: UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    let row = indexPath.row
-    switch row {
-    case 0:
+    if (indexPath.row % 4) == 0 {
       return 64
-    default:
+    } else {
       return 55
     }
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return groupedResults.count == 0 ? 0 : 36
+//    return groupedResults.count == 0 ? 0 : 36
+    return 36
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -38,15 +37,11 @@ extension ViewController: UITableViewDelegate {
     view.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
     view.textLabel?.frame = view.frame
     view.textLabel?.textAlignment = .center
-//    view.textLabel?.text = CoreDataController.shared.fetchedToDoByMonthController.sections?[section].name
-//    view.textLabel?.text = frc1.sections?[section].name
-    
     if groupedResults.count == 0 {
       return nil
     }
     if let date = groupedResults[section].first?.goalGroupByMonth {
-//      let title = dateFormatter.string(from: date)
-          view.textLabel?.text = date //title
+          view.textLabel?.text = date
     }
     return view
   }
@@ -56,41 +51,29 @@ extension ViewController: UITableViewDelegate {
 extension ViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
     print("numberOfSections: \(groupedResults.count)")
-//    return frc1.sections?.count ?? 0
     return groupedResults.count > 0 ? groupedResults.count : 1
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     todoRowsInSection = groupedResults[section].count
-    if var numberOfRows = todoRowsInSection  {
-      goalRowsInSection = (numberOfRows - 1) / 3 + 1
-      numberOfRows += goalRowsInSection ?? 1
-      print("numberOfRowsInSection \(section) \(numberOfRows)")
-      return numberOfRows
+    print("numberOfRowsInSection: todoRowsInSection \(section) \(todoRowsInSection ?? 0)")
+    if var rowsInSection = todoRowsInSection  {
+      goalRowsInSection = rowsInSection / 3 // (numberOfRows - 1) / 3 + 1
+      rowsInSection += goalRowsInSection ?? 1
+      print("numberOfRowsInSection: numberOfRows \(section) \(rowsInSection)")
+      return rowsInSection
     } else {
       return 0
     }
-    /*
-    // baseed on frc
-    todoRowsInSection = frc1.sections?[section].numberOfObjects
-    if var numberOfRows = todoRowsInSection  {
-      goalRowsInSection = (numberOfRows - 1) / 3 + 1
-      numberOfRows += goalRowsInSection ?? 1
-      return numberOfRows
-    } else {
-      return 0
-    }
-    // end frc
- */
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    
-    if (indexPath.row % 4) == 0 {
+    if (indexPath.row) % 4 == 0 {
+      print("Grouped - IndexPath: Section \(indexPath.section), Row \(indexPath.row)")
       let goalItem = groupedResults[indexPath.section][indexPath.row]
       let goalcell = tableView.dequeueReusableCell(withIdentifier: "GoalCell", for: indexPath)
       goalcell.backgroundColor = .systemGray6
-      goalcell.textLabel?.text = goalItem.goal
+      goalcell.textLabel?.text = "\(goalItem.goal) - \(indexPath.section) - \(indexPath.row)"
       if goalItem.goalComplete {
         let daysToCompleteGoal = goalItem.goalDuration / 86400
         goalcell.detailTextLabel?.text = "Goal completed in: \(daysToCompleteGoal) days"
@@ -98,20 +81,21 @@ extension ViewController: UITableViewDataSource {
         goalcell.detailTextLabel?.text = "Goal completed: \(goalItem.goalComplete)"
       }
       return goalcell
-    }
-    let offset: Int = indexPath.row / 4 + 1
-    let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
-    let todoItem = groupedResults[indexPath.section][previousIndex.row]
-    let todocell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell", for: indexPath)
-    todocell.textLabel?.text = todoItem.todo
-    if todoItem.todoComplete {
-      let daysToCompleteToDo = todoItem.todoDuration / 86400
-      todocell.detailTextLabel?.text = "Todo completed in: \(daysToCompleteToDo) days"
     } else {
-      todocell.detailTextLabel?.text = "Todo completed: \(todoItem.todoComplete)"
+      print("Grouped - IndexPath: Section \(indexPath.section), Row \(indexPath.row)")
+      let offset: Int = indexPath.row / 4 + 1
+      let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
+      let todoItem = groupedResults[indexPath.section][previousIndex.row]
+      let todocell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell", for: indexPath)
+      todocell.textLabel?.text = "\(todoItem.todo) - \(indexPath.section) - \(indexPath.row)"
+      if todoItem.todoComplete {
+        let daysToCompleteToDo = todoItem.todoDuration / 86400
+        todocell.detailTextLabel?.text = "Todo completed in: \(daysToCompleteToDo) days"
+      } else {
+        todocell.detailTextLabel?.text = "Todo completed: \(todoItem.todoComplete)"
+      }
+      return todocell
     }
-    return todocell
-    
     /*
     // frc method
     if (indexPath.row % 4) == 0 {

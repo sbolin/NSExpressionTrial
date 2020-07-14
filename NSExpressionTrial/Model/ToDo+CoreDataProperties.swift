@@ -43,7 +43,7 @@ extension ToDo {
   @objc var groupByWeek: String {
     get {
       let dateFormatter = DateFormatter()
-      dateFormatter.dateFormat = "w Y"
+      dateFormatter.dateFormat = "'week 'w 'of' Y"
       return dateFormatter.string(from: todoDateCreated)
     }
   }

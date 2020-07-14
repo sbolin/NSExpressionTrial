@@ -178,7 +178,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="ZLN-mo-ytg"/>
                     <connections>
-                        <outlet property="tableView" destination="bxQ-Wn-8Ar" id="6gT-bZ-TfG"/>
+                        <outlet property="frcTableView" destination="bxQ-Wn-8Ar" id="6gT-bZ-TfG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="arJ-D3-cM1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

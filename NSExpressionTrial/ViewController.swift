@@ -29,7 +29,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   let calendar = Calendar.current
   let date = Date()
   // end date components
-  
+    
   //MARK:- IBOutlets
   @IBOutlet weak var todayTableView: UITableView!
   
@@ -125,6 +125,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   //MARK: - View Life Cycle
   override func viewDidLoad() {
     super.viewDidLoad()
+    CoreDataController.shared.createToDosIfNeeded()
     todayTableView.delegate = self
     todayTableView.dataSource = self
     
@@ -146,7 +147,6 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     print("\n\n 1. setupToDoTableView - get counts using fetch and filter results\n")
 
     // temp
-    CoreDataController.shared.createToDosIfNeeded()
     let goalFetch: NSFetchRequest = Goal.goalFetchRequest()
     let todoFetch: NSFetchRequest = ToDo.todoFetchRequest()
     
@@ -462,7 +462,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
       return item.goalGroupByMonth
     }
     
-    let keys = groupedDictionary.keys.sorted()
+    let keys = groupedDictionary.keys // .sorted()
     print("keys: \(keys)")
 
     keys.forEach({
@@ -470,10 +470,6 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
       })
       
     // TODO: sort groupedResults
-
-    
-      
-    
 
     print("\n\ngroupedResults data:")
     print("sections: \(groupedResults.count)")
