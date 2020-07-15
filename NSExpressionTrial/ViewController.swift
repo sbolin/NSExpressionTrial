@@ -154,14 +154,14 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     // filter by date
     var startComponents = DateComponents()
     startComponents.year = 2019
-    startComponents.month = 7
+    startComponents.month = 6
     startComponents.day = 1
     startComponents.hour = 0
     startComponents.minute = 0
     let startDate = Calendar.current.date(from: startComponents) ?? Date()
     
     var endComponents = DateComponents()
-    endComponents.year = 2019
+    endComponents.year = 2020
     endComponents.month = 7
     endComponents.day = 31
     endComponents.hour = 23

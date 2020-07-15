@@ -41,16 +41,14 @@ extension FRCViewController: UITableViewDelegate {
 //MARK: - TableView DataSource
 extension FRCViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
-    print("frc: number of sections: \(frc1.sections?.count ?? 0)")
     return frc1.sections?.count ?? 0
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     todoRowsInSection = frc1.sections?[section].numberOfObjects
     if var numberOfRows = todoRowsInSection  {
-      goalRowsInSection = numberOfRows / 3 //(numberOfRows - 1) / 3 + 1
+      goalRowsInSection = numberOfRows / 3
       numberOfRows += goalRowsInSection ?? 0
-      print("frc: section: \(section), todos: \(todoRowsInSection ?? 0), tot rows: \(numberOfRows)")
       return numberOfRows
     } else {
       return 0
@@ -58,9 +56,7 @@ extension FRCViewController: UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    print("frc: cellForRowAt: s\(indexPath.section), r\(indexPath.row)")
     if (indexPath.row % 4) == 0 {
-      print("Goal")
       let offset: Int = indexPath.row / 4
       let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
       let todoObject = frc1.object(at: previousIndex)
@@ -77,7 +73,6 @@ extension FRCViewController: UITableViewDataSource {
       return goalcell
     } else {
       let offset: Int = indexPath.row / 4 + 1
-      print("ToDo")
       let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
       let todoObject = frc1.object(at: previousIndex)
       let todocell = tableView.dequeueReusableCell(withIdentifier: "FRCToDoCell", for: indexPath)
