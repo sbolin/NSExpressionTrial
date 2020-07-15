@@ -21,18 +21,18 @@ class FRCViewController: UIViewController, NSFetchedResultsControllerDelegate {
   //MARK: - FRC
   var fetchedResultsController: NSFetchedResultsController<ToDo>!
   
-  var fetchedToDoYearResultsController = CoreDataController.shared.fetchedToDoByYearController
-  var fetchedToDoMonthResultsController = CoreDataController.shared.fetchedToDoByMonthController
-  var fetchedToDoWeekResultsController = CoreDataController.shared.fetchedToDoByWeekController
-  var fetchedToDoAllResultsController = CoreDataController.shared.fetchedToDoResultsController
+  var fetchedToDoResultsController = CoreDataController.shared.fetchedToDoResultsController
+  var fetchedToDoByYearResultsController = CoreDataController.shared.fetchedToDoByYearController
+  var fetchedToDoByMonthResultsController = CoreDataController.shared.fetchedToDoByMonthController
+  var fetchedToDoByWeekResultsController = CoreDataController.shared.fetchedToDoByWeekController
   
-  var fetchedGoalYearResultsController = CoreDataController.shared.fetchedGoalByYearController
-  var fetchedGoalMonthResultsController = CoreDataController.shared.fetchedGoalByMonthController
-  var fetchedGoalWeekResultsController = CoreDataController.shared.fetchedGoalByWeekController
-  var fetchedGoalAllResultsController = CoreDataController.shared.fetchedGoalResultsController
+//  var fetchedGoalResultsController = CoreDataController.shared.fetchedGoalResultsController
+//  var fetchedGoalByYearResultsController = CoreDataController.shared.fetchedGoalByYearController
+//  var fetchedGoalByMonthResultsController = CoreDataController.shared.fetchedGoalByMonthController
+//  var fetchedGoalByWeekResultsController = CoreDataController.shared.fetchedGoalByWeekController
   
-  var frc1 = CoreDataController.shared.fetchedToDoByMonthController
-  var frc2 = CoreDataController.shared.fetchedGoalByMonthController
+  var frc1 = CoreDataController.shared.fetchedToDoResultsController
+//  var frc2 = CoreDataController.shared.fetchedGoalResultsController
   
   //MARK: - Date setup for Predicates
   let lastDay = Date().addingTimeInterval(-60 * 60 * 24) as NSDate
@@ -123,9 +123,8 @@ class FRCViewController: UIViewController, NSFetchedResultsControllerDelegate {
   
   func setupTableView() {
     if fetchedResultsController == nil {
-      fetchedResultsController = CoreDataController.shared.fetchedToDoResultsController
+      fetchedResultsController = fetchedToDoResultsController
     }
-    //    fetchedResultsController.fetchRequest.predicate = predicate
     do {
       try fetchedResultsController.performFetch()
       frcTableView.reloadData()
@@ -137,48 +136,59 @@ class FRCViewController: UIViewController, NSFetchedResultsControllerDelegate {
   func frcSetup() {
     print("\n\n 5. setupByMonthController - frc\n")
     
+    // TODO
     //    fetchedToDoResultsController.delegate = self
-    //    fetchedGoalResultsController.delegate = self
-    //    fetchedToDoResultsController.fetchRequest.predicate = allToDoPredicate
-    //    fetchedGoalResultsController.fetchRequest.predicate = allGoalPredicate
-    
-    //    fetchedToDoAllResultsController.delegate = self
-    //    fetchedGoalAllResultsController.delegate = self
-    //    fetchedToDoAllResultsController.fetchRequest.predicate = todoCompletedPredicate
-    //    fetchedGoalAllResultsController.fetchRequest.predicate = goalCompletedPredicate
-    //    fetchedToDoAllResultsController.fetchRequest.predicate = allToDoPredicate
-    //    fetchedGoalAllResultsController.fetchRequest.predicate = allGoalPredicate
+    //    fetchedToDoByYearResultsController.delegate = self
+        fetchedToDoByMonthResultsController.delegate = self  //
+    //    fetchedToDoByWeekResultsController.delegate = self
 
-    //    fetchedToDoYearResultsController.delegate = self
-    //    fetchedGoalYearResultsController.delegate = self
-    //    fetchedToDoYearResultsController.fetchRequest.predicate = todoCompletedPredicate
-    //    fetchedGoalYearResultsController.fetchRequest.predicate = goalCompletedPredicate
-    //    fetchedToDoYearResultsController.fetchRequest.predicate = allToDoPredicate
-    //    fetchedGoalYearResultsController.fetchRequest.predicate = allGoalPredicate
+    //    fetchedToDoResultsController.fetchRequest.predicate = allToDoPredicate
+    //    fetchedToDoResultsController.fetchRequest.predicate = todoCompletedPredicate
+    //    fetchedToDoResultsController.fetchRequest.predicate = pastYearToDoPredicate
+    //    fetchedToDoResultsController.fetchRequest.predicate = past6MonthToDoPredicate
+    //    fetchedToDoResultsController.fetchRequest.predicate = pastMonthToDoPredicate
+    //    fetchedToDoResultsController.fetchRequest.predicate = pastWeekToDoPredicate
     
-//    fetchedToDoMonthResultsController.delegate = self  //
-//    fetchedGoalMonthResultsController.delegate = self  //
-    //    fetchedToDoMonthResultsController.fetchRequest.predicate = todoCompletedPredicate
-    //    fetchedGoalMonthResultsController.fetchRequest.predicate = goalCompletedPredicate
-//    fetchedToDoMonthResultsController.fetchRequest.predicate = allToDoPredicate  //
-//    fetchedGoalMonthResultsController.fetchRequest.predicate = allGoalPredicate  //
-    //
-        fetchedToDoWeekResultsController.delegate = self
-        fetchedGoalWeekResultsController.delegate = self
-    //    fetchedToDoWeekResultsController.fetchRequest.predicate = todoCompletedPredicate
-    //    fetchedGoalWeekResultsController.fetchRequest.predicate = goalCompletedPredicate
-        fetchedToDoWeekResultsController.fetchRequest.predicate = allToDoPredicate
-        fetchedGoalWeekResultsController.fetchRequest.predicate = allGoalPredicate
+    //    fetchedToDoByYearResultsController.fetchRequest.predicate = allToDoPredicate
+    //    fetchedToDoByYearResultsController.fetchRequest.predicate = todoCompletedPredicate
     
- 
-//    frc1 = fetchedToDoAllResultsController
-//    frc2 = fetchedGoalAllResultsController
-//    frc1 = fetchedToDoYearResultsController
-//    frc2 = fetchedGoalYearResultsController
-//    frc1 = fetchedToDoMonthResultsController
-//    frc2 = fetchedGoalMonthResultsController
-    frc1 = fetchedToDoWeekResultsController
-    frc2 = fetchedGoalWeekResultsController
+        fetchedToDoByMonthResultsController.fetchRequest.predicate = allToDoPredicate  //
+    //    fetchedToDoByMonthResultsController.fetchRequest.predicate = todoCompletedPredicate
+
+    //    fetchedToDoByWeekResultsController.fetchRequest.predicate = allToDoPredicate
+    //    fetchedToDoByWeekResultsController.fetchRequest.predicate = todoCompletedPredicate
+
+    // Goals
+    //    fetchedGoalResultsController.delegate = self
+    //    fetchedGoalResultsController.delegate = self
+    //    fetchedGoalByYearResultsController.delegate = self
+//    fetchedGoalByMonthResultsController.delegate = self  //
+    //    fetchedGoalByWeekResultsController.delegate = self
+
+    //    fetchedGoalResultsController.fetchRequest.predicate = allGoalPredicate
+    //    fetchedGoalResultsController.fetchRequest.predicate = goalCompletedPredicate
+    //    fetchedGoalResultsController.fetchRequest.predicate = allGoalPredicate
+    //    fetchedGoalResultsController.fetchRequest.predicate = pastYearGoalPredicate
+    //    fetchedGoalResultsController.fetchRequest.predicate = pastMonthGoalPredicate
+    //    fetchedGoalResultsController.fetchRequest.predicate = pastWeekGoalPredicate
+    //    fetchedGoalByYearResultsController.fetchRequest.predicate = goalCompletedPredicate
+    //    fetchedGoalByYearResultsController.fetchRequest.predicate = allGoalPredicate
+    //    fetchedGoalByMonthResultsController.fetchRequest.predicate = goalCompletedPredicate
+//    fetchedGoalByMonthResultsController.fetchRequest.predicate = allGoalPredicate  //
+    //    fetchedGoalByWeekResultsController.fetchRequest.predicate = goalCompletedPredicate
+    //    fetchedGoalByWeekResultsController.fetchRequest.predicate = allGoalPredicate
+    
+    
+    //   frc1 = fetchedToDoResultsController
+    //    frc1 = fetchedToDoByYearResultsController
+        frc1 = fetchedToDoByMonthResultsController
+    //    frc1 = fetchedToDoByWeekResultsController
+
+
+    //    frc2 = fetchedGoalResultsController
+    //    frc2 = fetchedGoalByYearResultsController
+    //    frc2 = fetchedGoalByMonthResultsController
+    //    frc2 = fetchedGoalByWeekResultsController
     
 
     
@@ -187,11 +197,11 @@ class FRCViewController: UIViewController, NSFetchedResultsControllerDelegate {
     } catch {
       print("Fetch frc1 failed")
     }
-    do {
-      try frc2.performFetch()
-    } catch {
-      print("Fetch frc2 failed")
-    }
+//    do {
+//      try frc2.performFetch()
+//    } catch {
+//      print("Fetch frc2 failed")
+//    }
     /*
     
     let todoSections = frc1.sections

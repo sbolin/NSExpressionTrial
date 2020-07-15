@@ -41,6 +41,7 @@ extension FRCViewController: UITableViewDelegate {
 //MARK: - TableView DataSource
 extension FRCViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
+    print("frc: number of sections: \(frc1.sections?.count ?? 0)")
     return frc1.sections?.count ?? 0
   }
   
@@ -48,7 +49,8 @@ extension FRCViewController: UITableViewDataSource {
     todoRowsInSection = frc1.sections?[section].numberOfObjects
     if var numberOfRows = todoRowsInSection  {
       goalRowsInSection = numberOfRows / 3 //(numberOfRows - 1) / 3 + 1
-      numberOfRows += goalRowsInSection ?? 1
+      numberOfRows += goalRowsInSection ?? 0
+      print("frc: section: \(section), todos: \(todoRowsInSection ?? 0), tot rows: \(numberOfRows)")
       return numberOfRows
     } else {
       return 0
@@ -56,11 +58,15 @@ extension FRCViewController: UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    print("frc: cellForRowAt: s\(indexPath.section), r\(indexPath.row)")
     if (indexPath.row % 4) == 0 {
-      let todoObject = frc1.object(at: indexPath)
+      print("Goal")
+      let offset: Int = indexPath.row / 4
+      let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
+      let todoObject = frc1.object(at: previousIndex)
       let goalObject = todoObject.goal
       let goalcell = tableView.dequeueReusableCell(withIdentifier: "FRCGoalCell", for: indexPath)
-      goalcell.textLabel?.text = goalObject.goal
+      goalcell.textLabel?.text = "\(goalObject.goal) - s\(indexPath.section), r\(indexPath.row)"
       if goalObject.goalCompleted {
         let diffComponents = Calendar.current.dateComponents([.day], from: goalObject.goalDateCreated, to: goalObject.goalDateCompleted!)
         let daysToCompleteGoal = diffComponents.day!
@@ -69,19 +75,21 @@ extension FRCViewController: UITableViewDataSource {
         goalcell.detailTextLabel?.text = "Goal completed: \(goalObject.goalCompleted)"
       }
       return goalcell
-    }
-    let offset: Int = indexPath.row / 4 + 1
-    let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
-    let todoObject = frc1.object(at: previousIndex)
-    let todocell = tableView.dequeueReusableCell(withIdentifier: "FRCToDoCell", for: indexPath)
-    todocell.textLabel?.text = todoObject.todo
-    if todoObject.todoCompleted {
-      let diffComponents = Calendar.current.dateComponents([.day], from: todoObject.todoDateCreated, to: todoObject.todoDateCompleted!)
-      let daysToCompleteTodo = diffComponents.day!
-      todocell.detailTextLabel?.text = "Todo completed in: \(daysToCompleteTodo) days"
     } else {
-      todocell.detailTextLabel?.text = "Todo completed: \(todoObject.todoCompleted)"
+      let offset: Int = indexPath.row / 4 + 1
+      print("ToDo")
+      let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
+      let todoObject = frc1.object(at: previousIndex)
+      let todocell = tableView.dequeueReusableCell(withIdentifier: "FRCToDoCell", for: indexPath)
+      todocell.textLabel?.text = "\(todoObject.todo) - s\(indexPath.section), r\(indexPath.row)"
+      if todoObject.todoCompleted {
+        let diffComponents = Calendar.current.dateComponents([.day], from: todoObject.todoDateCreated, to: todoObject.todoDateCompleted!)
+        let daysToCompleteTodo = diffComponents.day!
+        todocell.detailTextLabel?.text = "Todo completed in: \(daysToCompleteTodo) days"
+      } else {
+        todocell.detailTextLabel?.text = "Todo completed: \(todoObject.todoCompleted)"
+      }
+      return todocell
     }
-    return todocell
   }
 }

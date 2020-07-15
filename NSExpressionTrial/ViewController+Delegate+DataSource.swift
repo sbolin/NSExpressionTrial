@@ -24,15 +24,15 @@ extension ViewController: UITableViewDelegate {
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//    return groupedResults.count == 0 ? 0 : 36
-    return 36
+    return groupedResults.count == 0 ? 0 : 36
+//    return 36
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let view = UITableViewHeaderFooterView()
     
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "MMM-YY" // "dd-MMM-YY"
+//    let dateFormatter = DateFormatter()
+//    dateFormatter.dateFormat = "MMM-YY" // "dd-MMM-YY"
     view.textLabel?.textColor = UIColor.systemOrange
     view.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
     view.textLabel?.frame = view.frame
@@ -50,17 +50,14 @@ extension ViewController: UITableViewDelegate {
 //MARK: - TableView DataSource
 extension ViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
-    print("numberOfSections: \(groupedResults.count)")
     return groupedResults.count > 0 ? groupedResults.count : 1
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     todoRowsInSection = groupedResults[section].count
-    print("numberOfRowsInSection: todoRowsInSection \(section) \(todoRowsInSection ?? 0)")
     if var rowsInSection = todoRowsInSection  {
       goalRowsInSection = rowsInSection / 3 // (numberOfRows - 1) / 3 + 1
       rowsInSection += goalRowsInSection ?? 1
-      print("numberOfRowsInSection: numberOfRows \(section) \(rowsInSection)")
       return rowsInSection
     } else {
       return 0
@@ -69,7 +66,6 @@ extension ViewController: UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if (indexPath.row) % 4 == 0 {
-      print("Grouped - IndexPath: Section \(indexPath.section), Row \(indexPath.row)")
       let goalItem = groupedResults[indexPath.section][indexPath.row]
       let goalcell = tableView.dequeueReusableCell(withIdentifier: "GoalCell", for: indexPath)
       goalcell.backgroundColor = .systemGray6
@@ -82,7 +78,6 @@ extension ViewController: UITableViewDataSource {
       }
       return goalcell
     } else {
-      print("Grouped - IndexPath: Section \(indexPath.section), Row \(indexPath.row)")
       let offset: Int = indexPath.row / 4 + 1
       let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
       let todoItem = groupedResults[indexPath.section][previousIndex.row]
@@ -96,26 +91,5 @@ extension ViewController: UITableViewDataSource {
       }
       return todocell
     }
-    /*
-    // frc method
-    if (indexPath.row % 4) == 0 {
-//    if indexPath.row == 0 {
-      let todoObject = frc1.object(at: indexPath)
-      let goalObject = todoObject.goal
-      let goalcell = tableView.dequeueReusableCell(withIdentifier: "GoalCell", for: indexPath)
-      goalcell.textLabel?.text = goalObject.goal
-      goalcell.detailTextLabel?.text = goalObject.goalCompleted.description
-      return goalcell
-    }
-    let offset: Int = indexPath.row / 4 + 1
-    let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
-    let todoObject = frc1.object(at: previousIndex)
-    let todocell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell", for: indexPath)
-    todocell.textLabel?.text = todoObject.todo
-    todocell.detailTextLabel?.text = todoObject.todoCompleted.description
-    return todocell
-    // end frc method
-    //
- */
   }
 }

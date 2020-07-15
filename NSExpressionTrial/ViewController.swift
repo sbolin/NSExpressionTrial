@@ -34,21 +34,20 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   @IBOutlet weak var todayTableView: UITableView!
   
   //MARK: - FRC
-  var fetchedToDoYearResultsController = CoreDataController.shared.fetchedToDoByYearController
-  var fetchedToDoMonthResultsController = CoreDataController.shared.fetchedToDoByMonthController
-  var fetchedToDoWeekResultsController = CoreDataController.shared.fetchedToDoByWeekController
+  /*
+  var fetchedToDoByYearResultsController = CoreDataController.shared.fetchedToDoByYearController
+  var fetchedToDoByMonthResultsController = CoreDataController.shared.fetchedToDoByMonthController
+  var fetchedToDoByWeekResultsController = CoreDataController.shared.fetchedToDoByWeekController
   var fetchedToDoResultsController = CoreDataController.shared.fetchedToDoResultsController
-  var fetchedToDoAllResultsController = CoreDataController.shared.fetchedToDoResultsController
+  var fetchedToDoResultsController = CoreDataController.shared.fetchedToDoResultsController
   
-  var fetchedGoalYearResultsController = CoreDataController.shared.fetchedGoalByYearController
-  var fetchedGoalMonthResultsController = CoreDataController.shared.fetchedGoalByMonthController
-  var fetchedGoalWeekResultsController = CoreDataController.shared.fetchedGoalByWeekController
+  var fetchedGoalByYearResultsController = CoreDataController.shared.fetchedGoalByYearController
+  var fetchedGoalByMonthResultsController = CoreDataController.shared.fetchedGoalByMonthController
+  var fetchedGoalByWeekResultsController = CoreDataController.shared.fetchedGoalByWeekController
   var fetchedGoalResultsController = CoreDataController.shared.fetchedGoalResultsController
-  var fetchedGoalAllResultsController = CoreDataController.shared.fetchedGoalResultsController
-  
-  var frc1 = CoreDataController.shared.fetchedToDoResultsController
-  var frc2 = CoreDataController.shared.fetchedGoalResultsController
-  
+  var fetchedGoalResultsController = CoreDataController.shared.fetchedGoalResultsController
+  */
+ 
   let lastDay = Date().addingTimeInterval(-60 * 60 * 24) as NSDate
   let lastWeek = Date().addingTimeInterval(-60 * 60 * 24 * 7) as NSDate
   let lastMonth = Date().addingTimeInterval(-60 * 60 * 24 * 30) as NSDate
@@ -56,6 +55,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
   let lastYear = Date().addingTimeInterval(-60 * 60 * 24 * 365) as NSDate
   let allTime = Date().addingTimeInterval(-60 * 60 * 24 * 365 * 10) as NSDate // 10 year to show all todos.
   
+ 
   //MARK: Date Goal Predicates
   lazy var allGoalPredicate: NSPredicate = {
     return NSPredicate(format: "%K > %@", #keyPath(Goal.goalDateCreated), allTime)
