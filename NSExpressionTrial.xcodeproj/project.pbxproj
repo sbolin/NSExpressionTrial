@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1567D7A624C04DC300608928 /* OldFRCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1567D7A524C04DC300608928 /* OldFRCViewController.swift */; };
+		1567D7A824C0BB2A00608928 /* Statistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1567D7A724C0BB2A00608928 /* Statistics.swift */; };
 		157877CE24AE6D4200D2E931 /* ViewController+Delegate+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 157877CD24AE6D4100D2E931 /* ViewController+Delegate+DataSource.swift */; };
 		15AC508B24AB1E7300A9759C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AC508A24AB1E7300A9759C /* AppDelegate.swift */; };
 		15AC508D24AB1E7300A9759C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AC508C24AB1E7300A9759C /* SceneDelegate.swift */; };
@@ -26,6 +28,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1567D7A524C04DC300608928 /* OldFRCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldFRCViewController.swift; sourceTree = "<group>"; };
+		1567D7A724C0BB2A00608928 /* Statistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Statistics.swift; sourceTree = "<group>"; };
 		157877CD24AE6D4100D2E931 /* ViewController+Delegate+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Delegate+DataSource.swift"; sourceTree = "<group>"; };
 		15AC508724AB1E7300A9759C /* NSExpressionTrial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NSExpressionTrial.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		15AC508A24AB1E7300A9759C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -83,6 +87,7 @@
 				157877CD24AE6D4100D2E931 /* ViewController+Delegate+DataSource.swift */,
 				15DE011D24BCD05D00E8082E /* FRCViewController.swift */,
 				15DE011F24BCD15300E8082E /* FRCViewController+Delegate+DataSource.swift */,
+				1567D7A524C04DC300608928 /* OldFRCViewController.swift */,
 				15AC509024AB1E7300A9759C /* Main.storyboard */,
 				15AC509324AB1E7D00A9759C /* Assets.xcassets */,
 				15AC509524AB1E7D00A9759C /* LaunchScreen.storyboard */,
@@ -99,8 +104,9 @@
 				15AC50AF24AC91FC00A9759C /* ToDo+CoreDataClass.swift */,
 				15AC50B024AC91FC00A9759C /* ToDo+CoreDataProperties.swift */,
 				15AC509E24AB1F3D00A9759C /* CoreDataController.swift */,
-				15AC50AC24AC90CA00A9759C /* Focus.xcdatamodeld */,
 				15DE011B24BCCF7A00E8082E /* ResultGroup.swift */,
+				1567D7A724C0BB2A00608928 /* Statistics.swift */,
+				15AC50AC24AC90CA00A9759C /* Focus.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -176,6 +182,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1567D7A624C04DC300608928 /* OldFRCViewController.swift in Sources */,
 				15DE011E24BCD05D00E8082E /* FRCViewController.swift in Sources */,
 				15AC508F24AB1E7300A9759C /* ViewController.swift in Sources */,
 				15DE011C24BCCF7A00E8082E /* ResultGroup.swift in Sources */,
@@ -188,6 +195,7 @@
 				157877CE24AE6D4200D2E931 /* ViewController+Delegate+DataSource.swift in Sources */,
 				15AC509F24AB1F3D00A9759C /* CoreDataController.swift in Sources */,
 				15AC508D24AB1E7300A9759C /* SceneDelegate.swift in Sources */,
+				1567D7A824C0BB2A00608928 /* Statistics.swift in Sources */,
 				15AC50B324AC91FD00A9759C /* ToDo+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

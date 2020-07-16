@@ -1,20 +1,19 @@
 //
-//  FRCViewController.swift
+//  OldFRCViewController.swift
 //  NSExpressionTrial
 //
-//  Created by Scott Bolin on 7/14/20.
+//  Created by Scott Bolin on 7/16/20.
 //  Copyright © 2020 Scott Bolin. All rights reserved.
 //
 
 import UIKit
 import CoreData
 
-class FRCViewController: UIViewController, NSFetchedResultsControllerDelegate {
+class OldFRCViewController: UIViewController, NSFetchedResultsControllerDelegate {
   
   //MARK: - Properties
   var todoRowsInSection: Int?
   var goalRowsInSection: Int?
-  var statistics = Statistics()
   
   //MARK: - Outlets
   @IBOutlet weak var frcTableView: UITableView!
@@ -113,8 +112,8 @@ class FRCViewController: UIViewController, NSFetchedResultsControllerDelegate {
   //MARK: - View Life Cycle
   override func viewDidLoad() {
     super.viewDidLoad()
-    frcTableView.delegate = self
-    frcTableView.dataSource = self
+//    frcTableView.delegate = self
+//    frcTableView.dataSource = self
     
     setupTableView()
     frcSetup()
@@ -139,64 +138,48 @@ class FRCViewController: UIViewController, NSFetchedResultsControllerDelegate {
     
     // TODO
     //    fetchedToDoResultsController.delegate = self
+    //    fetchedToDoByYearResultsController.delegate = self
+    fetchedToDoByMonthResultsController.delegate = self  //
+    //    fetchedToDoByWeekResultsController.delegate = self
+    
     //    fetchedToDoResultsController.fetchRequest.predicate = allToDoPredicate
+    //    fetchedToDoResultsController.fetchRequest.predicate = todoCompletedPredicate
     //    fetchedToDoResultsController.fetchRequest.predicate = pastYearToDoPredicate
     //    fetchedToDoResultsController.fetchRequest.predicate = past6MonthToDoPredicate
     //    fetchedToDoResultsController.fetchRequest.predicate = pastMonthToDoPredicate
     //    fetchedToDoResultsController.fetchRequest.predicate = pastWeekToDoPredicate
-    //    fetchedToDoResultsController.fetchRequest.predicate = todoCompletedPredicate
-
-    //    fetchedToDoByYearResultsController.delegate = self
+    
     //    fetchedToDoByYearResultsController.fetchRequest.predicate = allToDoPredicate
-    //    fetchedToDoByYearResultsController.fetchRequest.predicate = pastYearToDoPredicate
-    //    fetchedToDoByYearResultsController.fetchRequest.predicate = past6MonthToDoPredicate
-    //    fetchedToDoByYearResultsController.fetchRequest.predicate = pastMonthToDoPredicate
     //    fetchedToDoByYearResultsController.fetchRequest.predicate = todoCompletedPredicate
-
-        fetchedToDoByMonthResultsController.delegate = self  //
-        fetchedToDoByMonthResultsController.fetchRequest.predicate = allToDoPredicate  //
-    //    fetchedToDoByMonthResultsController.fetchRequest.predicate = pastYearToDoPredicate
-    //    fetchedToDoByMonthResultsController.fetchRequest.predicate = past6MonthToDoPredicate
-    //    fetchedToDoByMonthResultsController.fetchRequest.predicate = pastMonthToDoPredicate
-    //    fetchedToDoByMonthResultsController.fetchRequest.predicate = todoCompletedPredicate
-
-    //    fetchedToDoByWeekResultsController.delegate = self
+    
+    fetchedToDoByMonthResultsController.fetchRequest.predicate = allToDoPredicate  //
+    //   fetchedToDoByMonthResultsController.fetchRequest.predicate = todoCompletedPredicate
+    
     //    fetchedToDoByWeekResultsController.fetchRequest.predicate = allToDoPredicate
-    //    fetchedToDoByWeekResultsController.fetchRequest.predicate = pastYearToDoPredicate
-    //    fetchedToDoByWeekResultsController.fetchRequest.predicate = past6MonthToDoPredicate
-    //    fetchedToDoByWeekResultsController.fetchRequest.predicate = pastMonthToDoPredicate
     //    fetchedToDoByWeekResultsController.fetchRequest.predicate = todoCompletedPredicate
     
-    // GOAL
+    // Goals
     //    fetchedGoalResultsController.delegate = self
+    //    fetchedGoalByYearResultsController.delegate = self
+    fetchedGoalByMonthResultsController.delegate = self  //
+    //    fetchedGoalByWeekResultsController.delegate = self
+    
+    //    fetchedGoalResultsController.fetchRequest.predicate = allGoalPredicate
+    //    fetchedGoalResultsController.fetchRequest.predicate = goalCompletedPredicate
     //    fetchedGoalResultsController.fetchRequest.predicate = allGoalPredicate
     //    fetchedGoalResultsController.fetchRequest.predicate = pastYearGoalPredicate
-    //    fetchedGoalResultsController.fetchRequest.predicate = past6MonthGoalPredicate
     //    fetchedGoalResultsController.fetchRequest.predicate = pastMonthGoalPredicate
     //    fetchedGoalResultsController.fetchRequest.predicate = pastWeekGoalPredicate
-    //    fetchedGoalResultsController.fetchRequest.predicate = goalCompletedPredicate
-
-    //    fetchedGoalByYearResultsController.delegate = self
+    
     //    fetchedGoalByYearResultsController.fetchRequest.predicate = allGoalPredicate
-    //    fetchedGoalByYearResultsController.fetchRequest.predicate = pastYearGoalPredicate
-    //    fetchedGoalByYearResultsController.fetchRequest.predicate = past6MonthGoalPredicate
-    //    fetchedGoalByYearResultsController.fetchRequest.predicate = pastMonthGoalPredicate
     //    fetchedGoalByYearResultsController.fetchRequest.predicate = goalCompletedPredicate
-
-        fetchedGoalByMonthResultsController.delegate = self  //
-        fetchedGoalByMonthResultsController.fetchRequest.predicate = allGoalPredicate  //
-    //    fetchedGoalByMonthResultsController.fetchRequest.predicate = pastYearGoalPredicate
-    //    fetchedGoalByMonthResultsController.fetchRequest.predicate = past6MonthGoalPredicate
-    //    fetchedGoalByMonthResultsController.fetchRequest.predicate = pastMonthGoalPredicate
+    
+    fetchedGoalByMonthResultsController.fetchRequest.predicate = allGoalPredicate  //
     //    fetchedGoalByMonthResultsController.fetchRequest.predicate = goalCompletedPredicate
-
-    //    fetchedGoalByWeekResultsController.delegate = self
+    
     //    fetchedGoalByWeekResultsController.fetchRequest.predicate = allGoalPredicate
-    //    fetchedGoalByWeekResultsController.fetchRequest.predicate = pastYearGoalPredicate
-    //    fetchedGoalByWeekResultsController.fetchRequest.predicate = past6MonthGoalPredicate
-    //    fetchedGoalByWeekResultsController.fetchRequest.predicate = pastMonthGoalPredicate
     //    fetchedGoalByWeekResultsController.fetchRequest.predicate = goalCompletedPredicate
-
+    
     
     //    frc1 = fetchedToDoResultsController
     //    frc1 = fetchedToDoByYearResultsController
@@ -220,48 +203,80 @@ class FRCViewController: UIViewController, NSFetchedResultsControllerDelegate {
       print("Fetch frc2 failed")
     }
     
-    print("Counts by section:")
-    print("Section   TodoCount   Complete   Incomplete   Days to Complete")
+    guard let todoList = frc1.fetchedObjects else { return }
+    guard let goalList = frc2.fetchedObjects else { return }
     
+    
+    let totalCompletedTodos = todoList.filter { (todo) -> Bool in
+      todo.todoCompleted == true
+    }.count
+    
+    let totalIncompletedTodos = todoList.filter { (todo) -> Bool in
+      todo.todoCompleted == false
+    }.count
+    
+    let totalTodoCount = totalCompletedTodos + totalIncompletedTodos
+    
+    let totalCompletedGoals = goalList.filter { (goal) -> Bool in
+      goal.goalCompleted == true
+    }.count
+    
+    let totalIncompletedGoals = goalList.filter { (goal) -> Bool in
+      goal.goalCompleted == false
+    }.count
+    
+    let totalGoalCount = totalCompletedGoals + totalIncompletedGoals
+    
+    print("FRCViewController, Counts from frc1 with result filtered")
+    print("Goal Count: \(totalGoalCount)")
+    print("Todo Count: \(totalTodoCount)")
+    print("Completed Goal count: \(totalCompletedGoals)")
+    print("Incomplete Goal count: \(totalIncompletedGoals)")
+    print("Completed ToDo count: \(totalCompletedTodos)")
+    print("Incompleted ToDo count: \(totalIncompletedTodos)")
+    print("\n\n")
+    print("Counts by section:")
+    
+    print("Section   TodoCount   Complete   Incomplete   Days to Complete")
     guard let todoSections = frc1.sections?.count else { return }
     for section in 0...(todoSections - 1) {
-      statistics.todoDuration.append(0)
+      var daysToCompleteTodos = 0
       guard let todoSectionObject = frc1.sections?[section].objects as? [ToDo] else { return }
-      statistics.todoCount.append(todoSectionObject.count)
-      let tempCount = todoSectionObject.filter { (todo) -> Bool in
+      let todoCount = todoSectionObject.count
+      let completeTodoCount = todoSectionObject.filter { (todo) -> Bool in
         todo.todoCompleted == true
       }.count
-      statistics.todoComplete.append(tempCount)
       for todo in todoSectionObject {
         if todo.todoCompleted {
           let diffComponents = Calendar.current.dateComponents([.day], from: todo.todoDateCreated, to: todo.todoDateCompleted!)
-          statistics.todoDuration[section] += diffComponents.day!
+          daysToCompleteTodos += diffComponents.day!
+          print("\(todo.todo) daysToCompleteTodos: \(daysToCompleteTodos)")
         }
       }
-      statistics.todoIncomplete.append(statistics.todoCount[section] - statistics.todoComplete[section])
-      print("    \(section)        \(statistics.todoCount[section])           \(statistics.todoComplete[section])          \(statistics.todoIncomplete[section])          \(statistics.todoDuration[section])")
+      let incompleteTodoCount = todoCount - completeTodoCount
+      print("    \(section)        \(todoCount)           \(completeTodoCount)          \(incompleteTodoCount)          \(daysToCompleteTodos)")
     }
-    
     print("\n\n")
-    print("Section   GoalCount   Complete   Incomplete   Days to Complete")
     
+    print("Section   GoalCount   Complete   Incomplete   Days to Complete")
     guard let goalSections = frc2.sections?.count else { return }
     for section in 0...(goalSections - 1) {
-      statistics.goalDuration.append(0)
+      var daysToCompleteGoal = 0
       guard let goalSectionObject = frc2.sections?[section].objects as? [Goal] else { return }
-      statistics.goalCount.append(goalSectionObject.count)
-      let tempCount = goalSectionObject.filter { (goal) -> Bool in
+      let goalCount = goalSectionObject.count
+      let completeGoalCount = goalSectionObject.filter { (goal) -> Bool in
         goal.goalCompleted == true
       }.count
-      statistics.goalComplete.append(tempCount)
       for goal in goalSectionObject {
         if goal.goalCompleted {
           let diffComponents = Calendar.current.dateComponents([.day], from: goal.goalDateCreated, to: goal.goalDateCompleted!)
-          statistics.goalDuration[section] += diffComponents.day!
+          daysToCompleteGoal += diffComponents.day!
+          print("\(goal.goal) daysToCompleteTodos: \(daysToCompleteGoal)")
         }
       }
-      statistics.goalIncomplete.append(statistics.goalCount[section] - statistics.goalComplete[section])
-      print("    \(section)        \(statistics.goalCount[section])           \(statistics.goalComplete[section])          \(statistics.goalIncomplete[section])           \(statistics.goalDuration[section])")
+      
+      let incompleteGoalCount = goalCount - completeGoalCount
+      print("    \(section)        \(goalCount)           \(completeGoalCount)          \(incompleteGoalCount)           \(daysToCompleteGoal) ")
     }
   }
 }
