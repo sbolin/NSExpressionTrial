@@ -49,15 +49,33 @@ extension FRCViewController: UITableViewDataSource {
     if var numberOfRows = todoRowsInSection  {
       goalRowsInSection = numberOfRows / 3
       numberOfRows += goalRowsInSection ?? 0
-      return numberOfRows
+      return (numberOfRows + 1) // + 1 for summary cell
     } else {
       return 0
     }
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if (indexPath.row % 4) == 0 {
-      let offset: Int = indexPath.row / 4
+    let section = indexPath.section
+    if indexPath.row == 0 {
+      let summaryCell = tableView.dequeueReusableCell(withIdentifier: "FRCSummaryCell", for: indexPath)
+      let goalCount = statistics.goalCount[section]
+      let goalCompleted = statistics.goalComplete[section]
+//      let goalIncompleted = statistics.goalIncomplete[section]
+      let goalDuration = statistics.goalDuration[section]
+      let mainTitle = "\(goalCompleted) Goals Complete out of \(goalCount) - \(goalDuration) Days"
+      
+      let todoCount = statistics.todoCount[section]
+      let todoCompleted = statistics.todoComplete[section]
+//      let todoIncompleted = statistics.todoIncomplete[section]
+      let todoDuration = statistics.todoDuration[section]
+      let subTitle = "\(todoCompleted) Todos Complete out of \(todoCount) - \(todoDuration) Days"
+      summaryCell.textLabel?.text = mainTitle
+      summaryCell.detailTextLabel?.text = subTitle
+      return summaryCell
+    } else if (indexPath.row - 1) % 4 == 0 {
+//    if (indexPath.row % 4) == 0 {
+      let offset: Int = indexPath.row / 4 + 1
       let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
       let todoObject = frc1.object(at: previousIndex)
       let goalObject = todoObject.goal
@@ -72,7 +90,7 @@ extension FRCViewController: UITableViewDataSource {
       }
       return goalcell
     } else {
-      let offset: Int = indexPath.row / 4 + 1
+      let offset: Int = (indexPath.row - 1) / 4 + 2
       let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
       let todoObject = frc1.object(at: previousIndex)
       let todocell = tableView.dequeueReusableCell(withIdentifier: "FRCToDoCell", for: indexPath)
