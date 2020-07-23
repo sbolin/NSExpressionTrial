@@ -74,7 +74,6 @@ extension FRCViewController: UITableViewDataSource {
       summaryCell.detailTextLabel?.text = subTitle
       return summaryCell
     } else if (indexPath.row - 1) % 4 == 0 {
-//    if (indexPath.row % 4) == 0 {
       let offset: Int = indexPath.row / 4 + 1
       let previousIndex = IndexPath(row: indexPath.row - offset, section: indexPath.section)
       let todoObject = frc1.object(at: previousIndex)

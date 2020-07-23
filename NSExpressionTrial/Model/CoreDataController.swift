@@ -51,13 +51,13 @@ class CoreDataController {
     let managedContext = persistentContainer.viewContext
     let request = Goal.goalFetchRequest()
     let goalSort = NSSortDescriptor(keyPath: \Goal.goal, ascending: true)
-    let createdSort = NSSortDescriptor(keyPath: \Goal.goalDateCreated, ascending: false)
-    request.sortDescriptors = [createdSort]
+    let createdSort = NSSortDescriptor(keyPath: \Goal.goalDateCreated, ascending: true)
+    request.sortDescriptors = [goalSort, createdSort]
     
     let fetchedResultsController = NSFetchedResultsController(
       fetchRequest: request,
       managedObjectContext: managedContext,
-      sectionNameKeyPath: #keyPath(Goal.goalDateCreated),
+      sectionNameKeyPath: #keyPath(Goal.goal),
       cacheName: nil)
     return fetchedResultsController
   }()
@@ -171,8 +171,51 @@ class CoreDataController {
     // check if todos exist, if so return
     let fetchRequest = Goal.goalFetchRequest()
     let count = try! managedContext.count(for: fetchRequest)
-    
     guard count == 0 else { return }
+    
+    
+    var dateCreated = Date()
+    var dateCompleted = Date()
+    var goalComplete: Bool = true
+    
+    for goalNumber in 0...99 {
+      let goalTitle = "Goal #\(goalNumber + 1)"
+      if goalNumber <= 44 {
+        dateCreated = Date(timeIntervalSinceNow: TimeInterval(-86400 * goalNumber))
+      } else if (goalNumber > 44) && (goalNumber <= 89) {
+        dateCreated = Date(timeIntervalSinceNow: TimeInterval(-86400 * 2 * goalNumber))
+      } else if (goalNumber > 89) && (goalNumber <= 94) {
+        dateCreated = Date(timeIntervalSinceNow: TimeInterval(-86400 * 3 * goalNumber))
+      } else {
+        dateCreated = Date(timeIntervalSinceNow: TimeInterval(-86400 * (365 - goalNumber + 100)))
+      }
+      dateCompleted = dateCreated
+      let goal = NSEntityDescription.insertNewObject(forEntityName: "Goal", into: managedContext) as! Goal
+      goal.goal = goalTitle
+      goal.goalDateCreated = dateCreated
+      goal.goalCompleted = true
+
+      for todoNumber in 0...2 {
+        let random = Int.random(in: 1...20)
+        let todo = NSEntityDescription.insertNewObject(forEntityName: "ToDo", into: managedContext) as! ToDo
+        let todoTitle = "Goal #\(goalNumber + 1) To Do #\(todoNumber + 1)"
+        todo.todo = todoTitle
+        todo.todoDateCreated = dateCreated
+        todo.goal = goal
+        if random % 5 == 0 { // 20% change of todo being incomplete
+          todo.todoCompleted = false
+          goalComplete = false
+        } else {
+          todo.todoCompleted = true
+          todo.todoDateCompleted = dateCompleted.addingTimeInterval(TimeInterval(86400 * (todoNumber + 1)))
+          goal.goalDateCompleted = dateCompleted.addingTimeInterval(TimeInterval(86400 * (todoNumber + 1)))
+        }
+      }
+      if goalComplete == false {
+        goal.goalCompleted = false
+        goal.goalDateCompleted = nil
+      }
+    }
     
     // Goal 12
     let goal12 = NSEntityDescription.insertNewObject(forEntityName: "Goal", into: managedContext) as! Goal

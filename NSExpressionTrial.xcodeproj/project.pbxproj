@@ -65,7 +65,6 @@
 			isa = PBXGroup;
 			children = (
 				15AC508924AB1E7300A9759C /* NSExpressionTrial */,
-				15AC508824AB1E7300A9759C /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,6 +74,7 @@
 				15AC508724AB1E7300A9759C /* NSExpressionTrial.app */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		15AC508924AB1E7300A9759C /* NSExpressionTrial */ = {
@@ -87,6 +87,7 @@
 				157877CD24AE6D4100D2E931 /* ViewController+Delegate+DataSource.swift */,
 				15DE011D24BCD05D00E8082E /* FRCViewController.swift */,
 				15DE011F24BCD15300E8082E /* FRCViewController+Delegate+DataSource.swift */,
+				15AC508824AB1E7300A9759C /* Products */,
 				1567D7A524C04DC300608928 /* OldFRCViewController.swift */,
 				15AC509024AB1E7300A9759C /* Main.storyboard */,
 				15AC509324AB1E7D00A9759C /* Assets.xcassets */,
